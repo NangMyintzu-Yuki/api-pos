@@ -26,15 +26,28 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::post('operator/register', [AuthOperatorController::class, 'register']);
 Route::post('operator/login', [AuthOperatorController::class, 'login']);
+Route::post('operator/logout', [AuthOperatorController::class, 'logout']);
 Route::post('user/register', [AuthUserController::class, 'register']);
 Route::post('user/login', [AuthUserController::class, 'login']);
 
 
 ///////////////////////////////////////// Operator
 
-Route::prefix('operator')->group(function(){
-    Route::post('change_password', [OperatorController::class, 'changePassword']);
+Route::group(['middleware' => ['operator']],
+    function(){
+        Route::prefix('operator')->group(function(){
+            Route::post('change_password', [OperatorController::class, 'changePassword']);
+
+            Route::post('/', [OperatorController::class, 'index']);
+            Route::post('/store', [OperatorController::class, 'store']);
+            Route::post('/edit', [OperatorController::class, 'edit']);
+            Route::post('/update', [OperatorController::class, 'update']);
+            Route::post('/delete', [OperatorController::class, 'delete']);
+            Route::post('/filter', [OperatorController::class, 'filter']);
+        });
 });
+
+
 
 
 ///////////////////////////////////////// User

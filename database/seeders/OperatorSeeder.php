@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,8 @@ class OperatorSeeder extends Seeder
                 'branch_id' => 1,
                 'password' => Hash::make('superadminpassword'),
                 'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'Chef',
@@ -31,6 +34,8 @@ class OperatorSeeder extends Seeder
                 'branch_id' => 1,
                 'password' => Hash::make('chefpassword'),
                 'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
         ]);
     }

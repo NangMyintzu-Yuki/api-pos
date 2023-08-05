@@ -2,12 +2,12 @@
 
 namespace App\Http\Services;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class AuthUserService extends Controller{
+class AuthUserService extends BaseController{
     public function __construct(private User $user)
     {
 

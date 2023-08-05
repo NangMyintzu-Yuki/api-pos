@@ -10,8 +10,8 @@ class Role extends Model
 {
     use HasFactory,SoftDeletes;
     protected $fillable =[
-        "name",
         "level",
+        "name",
         "status",
         "created_by",
         "updated_by",

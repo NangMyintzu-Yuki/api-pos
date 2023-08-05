@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,8 @@ class UserSeeder extends Seeder
                 'phone_no' => "098765432",
                 'password' => Hash::make('userpassword'),
                 'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'User Two',
@@ -31,6 +34,8 @@ class UserSeeder extends Seeder
                 "phone_no" =>"0923456789",
                 'password' => Hash::make('userpassword'),
                 'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
 
         ]);
