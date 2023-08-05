@@ -19,12 +19,16 @@ class UserSeeder extends Seeder
             [
                 'name' => 'User One',
                 'username' => 'UserOne',
+                'email' => 'nangmyintzu89@gmail.com',
+                'phone_no' => "098765432",
                 'password' => Hash::make('userpassword'),
                 'status' => 1,
             ],
             [
                 'name' => 'User Two',
                 'username' => 'UserTwo',
+                'email' => 'nangmyintzu89@gmail.com',
+                "phone_no" =>"0923456789",
                 'password' => Hash::make('userpassword'),
                 'status' => 1,
             ],
