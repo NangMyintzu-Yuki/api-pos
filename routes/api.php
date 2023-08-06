@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthOperatorController;
 use App\Http\Controllers\AuthUserController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -79,3 +80,14 @@ Route::prefix('branch')->group(function(){
 });
 
 
+
+///////////////////////////////////////// Branch
+
+Route::prefix('category')->group(function () {
+    Route::post('/', [CategoryController::class, 'index']);
+    Route::post('/store', [CategoryController::class, 'store']);
+    Route::post('/edit', [CategoryController::class, 'edit']);
+    Route::post('/update', [CategoryController::class, 'update']);
+    Route::post('/delete', [CategoryController::class, 'delete']);
+    Route::post('/filter', [CategoryController::class, 'filter']);
+});

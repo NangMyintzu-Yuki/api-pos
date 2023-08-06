@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Branch extends Model
+class Category extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         "name",
+        "parent_id",
+        "branch_id",
         "status",
         "created_by",
         "updated_by",
@@ -24,8 +27,8 @@ class Branch extends Model
     {
         return $this->hasMany(Operator::class);
     }
-    public function category()
+    public function branch()
     {
-        return $this->hasMany(Category::class);
+        return $this->belongsTo(Branch::class);
     }
 }
