@@ -46,6 +46,9 @@ class OperatorService extends BaseController{
     public function edit($request)
     {
         $data = $this->operator->where('id',$request['id'])->first();
+        if (!$data) {
+            return $this->sendResponse("There is no data with");
+        }
         $data = new OperatorResource($data);
         return $this->sendResponse('Operator Edit Success',$data);
     }
@@ -93,7 +96,7 @@ class OperatorService extends BaseController{
         return $this->sendResponse('Operator Search Success',$data);
     }
 
-    
+
     /////////////////////////////////////////////////////////////////////////////////////
 
 

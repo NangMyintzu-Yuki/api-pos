@@ -55,6 +55,14 @@ Route::group(['middleware' => ['operator']],
 Route::prefix('user')->group(function(){
     Route::post('change_password',[UserController::class,'changePassword']);
     Route::post('reset_password',[UserController::class,'resetPassword']);
+
+    Route::post('/', [UserController::class, 'index']);
+    Route::post('/store', [UserController::class, 'store']);
+    Route::post('/edit', [UserController::class, 'edit']);
+    Route::post('/update', [UserController::class, 'update']);
+    Route::post('/delete', [UserController::class, 'delete']);
+    Route::post('/filter', [UserController::class, 'filter']);
+    Route::post('/change_status',[UserController::class,'changeStatus']);
 });
 
 

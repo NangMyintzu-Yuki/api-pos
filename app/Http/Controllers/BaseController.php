@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class BaseController extends Controller
 {
 
-    
+
     ///////////////////////////////////////////////////////////////////
 
     public function sendResponse($message, $data = null)
@@ -41,9 +41,10 @@ class BaseController extends Controller
     ////////////////////////////////////////////////////////////////////
 
 
-    public function getAll($model,$rowCount = 20)
+    public function getAll($model,$rowCount)
     {
-        $data = DB::table($model)->with('branch')->paginate($rowCount);
+        $rowCount = !$rowCount ? 20 : $rowCount;
+        $data = DB::table($model)->paginate($rowCount);
         // return $data->items();
         return $data;
     }
