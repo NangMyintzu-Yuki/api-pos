@@ -44,7 +44,7 @@ class BaseController extends Controller
     public function getAll($model,$rowCount)
     {
         $rowCount = !$rowCount ? 20 : $rowCount;
-        $data = DB::table($model)->paginate($rowCount);
+        $data = DB::table($model)->whereNull('deleted_at')->paginate($rowCount);
         // return $data->items();
         return $data;
     }

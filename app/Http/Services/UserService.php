@@ -46,7 +46,7 @@ class UserService extends BaseController
         $data = $this->user->where('id', $request['id'])->whereNull('deleted_at')->first();
         if(!$data)
         {
-            return $this->sendResponse("There is no data with");
+            return $this->sendResponse("User Not Found");
         }
         $data = new UserResource($data);
         return $this->sendResponse('User Edit Success', $data);

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthOperatorController;
 use App\Http\Controllers\AuthUserController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -63,6 +64,18 @@ Route::prefix('user')->group(function(){
     Route::post('/delete', [UserController::class, 'delete']);
     Route::post('/filter', [UserController::class, 'filter']);
     Route::post('/change_status',[UserController::class,'changeStatus']);
+});
+
+
+///////////////////////////////////////// Branch
+
+Route::prefix('branch')->group(function(){
+    Route::post('/', [BranchController::class, 'index']);
+    Route::post('/store', [BranchController::class, 'store']);
+    Route::post('/edit', [BranchController::class, 'edit']);
+    Route::post('/update', [BranchController::class, 'update']);
+    Route::post('/delete', [BranchController::class, 'delete']);
+    Route::post('/filter', [BranchController::class, 'filter']);
 });
 
 
