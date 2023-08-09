@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreCategoryRequest extends FormRequest
+class StoreProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,24 +23,11 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             "name"=>"required",
-            "parent_id" => "required",
-            "branch_id"=>"required",
-            "status"=>""
+            "category_id" => "required",
+            "image"=>"required|image|mimes:jpg,jpeg,png,svg,gif",
+            "price"=>"required",
+            "branch_id" => "required",
+            "status"=>"",
         ];
     }
-
-    // public function failedValidation(Validator $validator)
-
-    // {
-
-    //     throw new HttpResponseException(response()->json([
-
-    //         'success'   => false,
-
-    //         'message'   => 'Validation errors',
-
-    //         'data'      => $validator->errors()
-
-    //     ]));
-    // }
 }

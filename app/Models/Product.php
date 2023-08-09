@@ -6,11 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Branch extends Model
+class Product extends Model
 {
     use HasFactory,SoftDeletes;
     protected $fillable = [
         "name",
+        "category_id",
+        "image",
+        "price",
+        "branch_id",
         "status",
         "created_by",
         "updated_by",
@@ -24,12 +28,12 @@ class Branch extends Model
     {
         return $this->hasMany(Operator::class);
     }
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
     public function category()
     {
-        return $this->hasMany(Category::class);
-    }
-    public function product()
-    {
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Category::class);
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthUserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -81,7 +82,7 @@ Route::prefix('branch')->group(function(){
 
 
 
-///////////////////////////////////////// Branch
+///////////////////////////////////////// Category
 
 Route::prefix('category')->group(function () {
     Route::post('/', [CategoryController::class, 'index']);
@@ -90,4 +91,16 @@ Route::prefix('category')->group(function () {
     Route::post('/update', [CategoryController::class, 'update']);
     Route::post('/delete', [CategoryController::class, 'delete']);
     Route::post('/filter', [CategoryController::class, 'filter']);
+});
+
+
+///////////////////////////////////////// Category
+
+Route::prefix('product')->group(function () {
+    Route::post('/', [ProductController::class, 'index']);
+    Route::post('/store', [ProductController::class, 'store']);
+    Route::post('/edit', [ProductController::class, 'edit']);
+    Route::post('/update', [ProductController::class, 'update']);
+    Route::post('/delete', [ProductController::class, 'delete']);
+    Route::post('/filter', [ProductController::class, 'filter']);
 });
