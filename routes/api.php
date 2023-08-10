@@ -6,6 +6,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -94,7 +95,7 @@ Route::prefix('category')->group(function () {
 });
 
 
-///////////////////////////////////////// Category
+///////////////////////////////////////// Product
 
 Route::prefix('product')->group(function () {
     Route::post('/', [ProductController::class, 'index']);
@@ -103,4 +104,16 @@ Route::prefix('product')->group(function () {
     Route::post('/update', [ProductController::class, 'update']);
     Route::post('/delete', [ProductController::class, 'delete']);
     Route::post('/filter', [ProductController::class, 'filter']);
+});
+
+
+///////////////////////////////////////// Product Image
+
+Route::prefix('product_image')->group(function () {
+    Route::post('/', [ProductImageController::class, 'index']);
+    Route::post('/store', [ProductImageController::class, 'store']);
+    Route::post('/edit', [ProductImageController::class, 'edit']);
+    Route::post('/update', [ProductImageController::class, 'update']);
+    Route::post('/delete', [ProductImageController::class, 'delete']);
+    Route::post('/filter', [ProductImageController::class, 'filter']);
 });

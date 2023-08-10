@@ -42,4 +42,8 @@ class Operator extends Model
    {
     return $this->belongsTo(Product::class);
    }
+   public function product_images()
+   {
+    return $this->belongsTo(ProductImage::class);
+   }
 }

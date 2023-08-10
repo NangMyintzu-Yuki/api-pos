@@ -5,7 +5,6 @@ namespace App\Http\Services;
 use App\Http\Controllers\BaseController;
 use App\Models\Product;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class ProductService extends BaseController
 {
@@ -76,13 +75,16 @@ class ProductService extends BaseController
 
     public function delete($request)
     {
-        $prevImage = $this->product->where('id', $request['id'])->whereNull('deleted_at')->value('image');
-        $path = 'images/products/' . $prevImage;
+        $prevImage = $this->product->where('id', $request['id'])->whereNull('deleted_at')->first();
+        $multiImagePath = "images/products/" . $request['id'];
+        File::deleteDirectory(public_path($multiImagePath));
+
+        $path = 'images/products/' . $prevImage['image'];
         if (File::exists($path)) {
             File::delete($path);
         }
         $this->deleteById($request['id'],'products');
-        return $this->sendResponse('Product Delete Success');
+        return $this->sendResponse('Product Delete Success', $multiImagePath);
     }
 
     //////////////////////////////////////////////////////////////////////
