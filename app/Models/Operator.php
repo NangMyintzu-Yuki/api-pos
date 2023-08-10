@@ -46,4 +46,8 @@ class Operator extends Model
    {
     return $this->belongsTo(ProductImage::class);
    }
+   public function kitchen()
+   {
+    return $this->hasMany(Kitchen::class);
+   }
 }

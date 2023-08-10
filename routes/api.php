@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthOperatorController;
 use App\Http\Controllers\AuthUserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
@@ -117,3 +118,17 @@ Route::prefix('product_image')->group(function () {
     Route::post('/delete', [ProductImageController::class, 'delete']);
     Route::post('/filter', [ProductImageController::class, 'filter']);
 });
+
+
+
+///////////////////////////////////////// Product Image
+
+Route::prefix('kitchen')->group(function () {
+    Route::post('/', [KitchenController::class, 'index']);
+    Route::post('/store', [KitchenController::class, 'store']);
+    Route::post('/edit', [KitchenController::class, 'edit']);
+    Route::post('/update', [KitchenController::class, 'update']);
+    Route::post('/delete', [KitchenController::class, 'delete']);
+    Route::post('/filter', [KitchenController::class, 'filter']);
+});
+

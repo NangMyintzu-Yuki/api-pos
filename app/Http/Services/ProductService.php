@@ -95,7 +95,7 @@ class ProductService extends BaseController
         $category = $request['category_id'];
         $rowCount = $request['row_count'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = Product::where('name','like',"%$keyword%")->where('category_id',$category)->paginate($rowCount);
+        $data = Product::where('name','like',"%$keyword%")->orWhere('category_id',$category)->paginate($rowCount);
         return $this->sendResponse('Product Search Success',$data);
     }
 }
