@@ -9,6 +9,7 @@ use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -156,6 +157,20 @@ Route::prefix('payment_type')->group(function () {
     Route::post('/update', [PaymentTypeController::class, 'update']);
     Route::post('/delete', [PaymentTypeController::class, 'delete']);
     Route::post('/filter', [PaymentTypeController::class, 'filter']);
+});
+
+
+
+
+///////////////////////////////////////// Sale
+
+Route::prefix('sale')->group(function () {
+    Route::post('/', [SaleController::class, 'index']);
+    Route::post('/store', [SaleController::class, 'store']);
+    Route::post('/edit', [SaleController::class, 'edit']);
+    Route::post('/update', [SaleController::class, 'update']);
+    Route::post('/delete', [SaleController::class, 'delete']);
+    Route::post('/filter', [SaleController::class, 'filter']);
 });
 
 
