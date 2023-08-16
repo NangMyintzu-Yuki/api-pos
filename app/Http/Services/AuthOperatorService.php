@@ -20,7 +20,7 @@ class AuthOperatorService extends BaseController{
     }
 
 
-    public function login($request)
+    public function login(array $request)
     {
         $loginInfo = $this->operator->where('username', $request['username'])->first();
         if (!$loginInfo || !Hash::check($request['password'], $loginInfo->password)) {

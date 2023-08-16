@@ -43,17 +43,8 @@ class OperatorController extends BaseController
     {
         return $this->operatorService->filterOperator($request);
     }
-    public function changePassword(Request $request)
+    public function changePassword(OperatorChangePasswordRequest $request)
     {
-        // $request->validate([
-        //     'operator_id' => 'required',
-        //     'new_password' => 'required',
-        //     'old_password' => 'required',
-        // ]);
-
-        // $this->articleService->store($validatedData);
-        // return $this->operatorService->changePassword($request->only('operator_id','new_password','old_password'));
-        return $this->operatorService->changePassword($request);
-        // return "Change Passwrod";
+        return $this->operatorService->changePassword($request->validated());
     }
 }

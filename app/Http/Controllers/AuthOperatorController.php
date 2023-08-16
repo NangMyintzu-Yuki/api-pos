@@ -2,28 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthOperatorRequest;
 use App\Http\Services\AuthOperatorService;
 use Illuminate\Http\Request;
 
 class AuthOperatorController extends Controller
 {
-    public function __construct(private AuthOperatorService $authService)
+    public function __construct(private AuthOperatorService $authOperatorService)
     {
 
     }
 
-    public function login(Request $request)
+    public function login(AuthOperatorRequest $request)
     {
-        return $this->authService->login($request);
+        return $this->authOperatorService->login($request->validated());
     }
-    
+
     public function register(Request $request)
     {
-        return $this->authService->register($request);
+        return $this->authOperatorService->register($request);
     }
 
     public function logout(Request $request)
     {
-        return $this->authService->logout($request);
+        return $this->authOperatorService->logout($request);
     }
 }

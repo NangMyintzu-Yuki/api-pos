@@ -38,8 +38,8 @@ Route::post('user/login', [AuthUserController::class, 'login']);
 
 ///////////////////////////////////////// Operator
 
-Route::group(['middleware' => ['operator']],
-    function(){
+// Route::group(['middleware' => ['operator']],
+//     function(){
         Route::prefix('operator')->group(function(){
             Route::post('change_password', [OperatorController::class, 'changePassword']);
 
@@ -50,7 +50,7 @@ Route::group(['middleware' => ['operator']],
             Route::post('/delete', [OperatorController::class, 'delete']);
             Route::post('/filter', [OperatorController::class, 'filter']);
         });
-});
+// });
 
 
 

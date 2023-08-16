@@ -100,18 +100,10 @@ class OperatorService extends BaseController{
     /////////////////////////////////////////////////////////////////////////////////////
 
 
-    public function changePassword($request)
+    public function changePassword(array $request)
     {
         // dd($request);
-        if(!isset($request['operator_id'])){
-            return $this->sendError(("Operator is Reqeuired!"));
-        }
-        if(!isset($request['new_password'])){
-            return $this->sendError(("New Password is Reqeuired!"));
-        }
-        if(!isset($request['old_password'])){
-            return $this->sendError(("Old Password is Reqeuired!"));
-        }
+        
         $operatorId = $request['operator_id'];
         $operatorInfo = $this->operator->where('id',$operatorId)->first();
         if(!$operatorInfo || !Hash::check($request['old_password'],$operatorInfo->password)){

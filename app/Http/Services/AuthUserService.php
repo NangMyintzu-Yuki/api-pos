@@ -16,12 +16,12 @@ class AuthUserService extends BaseController{
     {
         return "User Register";
     }
-    public function login($request)
+    public function login(array $request)
     {
-        $loginInfo = $this->user->where('username',$request['username'])->first();
+        $loginInfo = $this->user->where('phone_no',$request['phone_no'])->first();
         if(!$loginInfo || !Hash::check($request['password'], $loginInfo->password))
         {
-            return $this->sendError('Username or password does not match');
+            return $this->sendError('Phone No or password does not match');
         }
         $loginInfo = new UserResource($loginInfo);
         $token = $loginInfo->createToken('posUserToken')->plainTextToken;

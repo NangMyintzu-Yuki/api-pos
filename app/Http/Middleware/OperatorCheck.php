@@ -15,16 +15,16 @@ class OperatorCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $tokenName = auth()->user()->currentAccessToken()->name;
+        // $tokenName = auth()->user()->currentAccessToken()->name;
 
-        if ($tokenName == "posOperatorToken") {
-            return $next($request);
-        } else {
-            return response()->json([
-                'code' => 401,
-                'progress' => 'Unauthorized',
-            ]);
-        }
-        return $next($request);
+        // if ($tokenName == "posOperatorToken") {
+        //     return $next($request);
+        // } else {
+        //     return response()->json([
+        //         'code' => 401,
+        //         'progress' => 'Unauthorized',
+        //     ]);
+        // }
+        // return $next($request);
     }
 }
