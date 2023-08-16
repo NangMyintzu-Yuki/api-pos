@@ -6,6 +6,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\TableController;
@@ -144,4 +145,17 @@ Route::prefix('table')->group(function () {
     Route::post('/delete', [TableController::class, 'delete']);
     Route::post('/filter', [TableController::class, 'filter']);
 });
+
+
+///////////////////////////////////////// Payment Type
+
+Route::prefix('payment_type')->group(function () {
+    Route::post('/', [PaymentTypeController::class, 'index']);
+    Route::post('/store', [PaymentTypeController::class, 'store']);
+    Route::post('/edit', [PaymentTypeController::class, 'edit']);
+    Route::post('/update', [PaymentTypeController::class, 'update']);
+    Route::post('/delete', [PaymentTypeController::class, 'delete']);
+    Route::post('/filter', [PaymentTypeController::class, 'filter']);
+});
+
 
