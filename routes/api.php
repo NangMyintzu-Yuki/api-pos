@@ -8,6 +8,7 @@ use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
+use App\Http\Controllers\TableController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -121,7 +122,7 @@ Route::prefix('product_image')->group(function () {
 
 
 
-///////////////////////////////////////// Product Image
+///////////////////////////////////////// Kitchen
 
 Route::prefix('kitchen')->group(function () {
     Route::post('/', [KitchenController::class, 'index']);
@@ -130,5 +131,17 @@ Route::prefix('kitchen')->group(function () {
     Route::post('/update', [KitchenController::class, 'update']);
     Route::post('/delete', [KitchenController::class, 'delete']);
     Route::post('/filter', [KitchenController::class, 'filter']);
+});
+
+
+///////////////////////////////////////// Table
+
+Route::prefix('table')->group(function () {
+    Route::post('/', [TableController::class, 'index']);
+    Route::post('/store', [TableController::class, 'store']);
+    Route::post('/edit', [TableController::class, 'edit']);
+    Route::post('/update', [TableController::class, 'update']);
+    Route::post('/delete', [TableController::class, 'delete']);
+    Route::post('/filter', [TableController::class, 'filter']);
 });
 

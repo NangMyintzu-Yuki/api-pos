@@ -36,5 +36,9 @@ class Branch extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
+    public function table()
+    {
+        return $this->hasMany(Table::class);
+    }
 
 }
