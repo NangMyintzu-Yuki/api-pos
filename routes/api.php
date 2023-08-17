@@ -172,6 +172,7 @@ Route::prefix('sale')->group(function () {
     Route::post('/update', [SaleController::class, 'update']);
     Route::post('/delete', [SaleController::class, 'delete']);
     Route::post('/filter', [SaleController::class, 'filter']);
+    Route::post('/change_status', [SaleController::class, 'change_status']);
 });
 
 

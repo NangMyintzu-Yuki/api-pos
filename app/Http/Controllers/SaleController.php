@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SaleChangeStatusRequest;
 use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\UpdateSaleRequest;
 use App\Http\Services\SaleService;
@@ -35,5 +36,9 @@ class SaleController extends Controller
     public function filter(Request $request)
     {
         return $this->saleService->filterSale($request);
+    }
+    public function change_status(SaleChangeStatusRequest $request)
+    {
+        return $this->saleService->change_status($request->validated());
     }
 }
