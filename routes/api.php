@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AddToCartController;
+use App\Http\Controllers\AddToCartDetailController;
 use App\Http\Controllers\AuthOperatorController;
 use App\Http\Controllers\AuthUserController;
 use App\Http\Controllers\BranchController;
@@ -175,7 +177,7 @@ Route::prefix('sale')->group(function () {
 });
 
 
-///////////////////////////////////////// Sale
+///////////////////////////////////////// Sale Detail
 
 Route::prefix('sale_detail')->group(function () {
     Route::post('/', [SaleDetailController::class, 'index']);
@@ -184,6 +186,30 @@ Route::prefix('sale_detail')->group(function () {
     Route::post('/update', [SaleDetailController::class, 'update']);
     Route::post('/delete', [SaleDetailController::class, 'delete']);
     Route::post('/filter', [SaleDetailController::class, 'filter']);
+});
+
+
+///////////////////////////////////////// Add To Cart
+
+Route::prefix('add_to_cart')->group(function () {
+    Route::post('/', [AddToCartController::class, 'index']);
+    Route::post('/store', [AddToCartController::class, 'store']);
+    Route::post('/edit', [AddToCartController::class, 'edit']);
+    Route::post('/update', [AddToCartController::class, 'update']);
+    Route::post('/delete', [AddToCartController::class, 'delete']);
+    Route::post('/filter', [AddToCartController::class, 'filter']);
+});
+
+
+///////////////////////////////////////// Add To Cart Detail
+
+Route::prefix('add_to_cart_detail')->group(function () {
+    Route::post('/', [AddToCartDetailController::class, 'index']);
+    Route::post('/store', [AddToCartDetailController::class, 'store']);
+    Route::post('/edit', [AddToCartDetailController::class, 'edit']);
+    Route::post('/update', [AddToCartDetailController::class, 'update']);
+    Route::post('/delete', [AddToCartDetailController::class, 'delete']);
+    Route::post('/filter', [AddToCartDetailController::class, 'filter']);
 });
 
 

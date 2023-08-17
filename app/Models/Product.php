@@ -44,4 +44,8 @@ class Product extends Model
     {
         return $this->hasMany(SaleDetail::class);
     }
+    public function add_to_cart_detail()
+    {
+        return $this->hasMany(AddToCartDetail::class);
+    }
 }
