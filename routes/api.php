@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SaleDetailController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -172,5 +173,18 @@ Route::prefix('sale')->group(function () {
     Route::post('/delete', [SaleController::class, 'delete']);
     Route::post('/filter', [SaleController::class, 'filter']);
 });
+
+
+///////////////////////////////////////// Sale
+
+Route::prefix('sale_detail')->group(function () {
+    Route::post('/', [SaleDetailController::class, 'index']);
+    Route::post('/store', [SaleDetailController::class, 'store']);
+    Route::post('/edit', [SaleDetailController::class, 'edit']);
+    Route::post('/update', [SaleDetailController::class, 'update']);
+    Route::post('/delete', [SaleDetailController::class, 'delete']);
+    Route::post('/filter', [SaleDetailController::class, 'filter']);
+});
+
 
 
