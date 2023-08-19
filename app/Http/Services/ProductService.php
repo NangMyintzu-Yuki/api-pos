@@ -17,7 +17,13 @@ class ProductService extends BaseController
 
     public function index($request)
     {
-        $data = Product::with('branch')->paginate($request['row_count']);
+        $data = Product::with(['branch' => function ($query){
+            $query->select('id','name');
+        },
+        'category' => function($query){
+            $query->select('id','name');
+        }
+        ])->paginate($request['row_count']);
         return $this->sendResponse('Product Index Success',$data);
     }
 
@@ -41,7 +47,16 @@ class ProductService extends BaseController
 
     public function edit($request)
     {
-        $data = $this->product->where('id',$request['id'])->whereNull('deleted_at')->first();
+        $data = $this->product->where('id',$request['id'])
+            ->whereNull('deleted_at')
+            ->with(['branch' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'category' => function ($query){
+                $query->select('id','name');
+            }
+            ])
+            ->first();
         if(!$data){
             return $this->sendResponse('Product Not Found');
         }
@@ -95,7 +110,17 @@ class ProductService extends BaseController
         $category = $request['category_id'];
         $rowCount = $request['row_count'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = Product::where('name','like',"%$keyword%")->orWhere('category_id',$category)->paginate($rowCount);
+        $data = Product::where('name','like',"%$keyword%")
+            ->orWhere('category_id',$category)
+            ->with([
+                'branch' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'category' => function ($query) {
+                    $query->select('id', 'name');
+                }
+            ])
+            ->paginate($rowCount);
         return $this->sendResponse('Product Search Success',$data);
     }
 }

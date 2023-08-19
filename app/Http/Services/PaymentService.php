@@ -17,7 +17,21 @@ class PaymentService extends BaseController
 
     public function index($request)
     {
-        $data = Payment::with(['branch', 'payment_type', 'sale','operator'])->paginate($request['row_count']);
+        $data = Payment::with([
+                        'branch' => function($q){
+                            $q->select('id','name');
+                        },
+                        'payment_type' => function($q){
+                            $q->select('id','name');
+                        },
+                        'sale' => function($q){
+                            $q->select('id','voucher_no','date','total_amount');
+                        },
+                        'cash_collector' => function($q){
+                            $q->select('id','name','username');
+                        }
+                        ])
+                        ->paginate($request['row_count']);
         return $this->sendResponse('Payment Index Success', $data);
     }
 
@@ -33,7 +47,25 @@ class PaymentService extends BaseController
 
     public function edit($request)
     {
-        $data = $this->payment->where('id', $request['id'])->whereNull('deleted_at')->first();
+        $data = $this
+                ->payment
+                ->where('id', $request['id'])
+                ->whereNull('deleted_at')
+                ->with([
+                    'branch' => function ($q) {
+                        $q->select('id', 'name');
+                    },
+                    'payment_type' => function ($q) {
+                        $q->select('id', 'name');
+                    },
+                    'sale' => function ($q) {
+                        $q->select('id', 'voucher_no', 'date', 'total_amount');
+                    },
+                    'cash_collector' => function ($q) {
+                        $q->select('id', 'name', 'username');
+                    }
+                ])
+                ->first();
         if (!$data) {
             return $this->sendResponse('Payment Not Found');
         }
@@ -67,9 +99,44 @@ class PaymentService extends BaseController
         $paymentTypeId =  $request['payment_type_id'];
         $rowCount = !$rowCount ? null : $rowCount;
         if ($request['branch_id']) {
-            $data = Payment::where('sale_id', $saleId)->where('payment_type_id', $paymentTypeId)->where('cash_collected_by',$operatorId)->where('branch_id', $branchId)->paginate($rowCount);
+            $data = Payment::where('sale_id', $saleId)
+                            ->where('payment_type_id', $paymentTypeId)
+                            ->where('cash_collected_by',$operatorId)
+                            ->where('branch_id', $branchId)
+                            ->with([
+                                'branch' => function ($q) {
+                                    $q->select('id', 'name');
+                                },
+                                'payment_type' => function ($q) {
+                                    $q->select('id', 'name');
+                                },
+                                'sale' => function ($q) {
+                                    $q->select('id', 'voucher_no', 'date', 'total_amount');
+                                },
+                                'cash_collector' => function ($q) {
+                                    $q->select('id', 'name', 'username');
+                                }
+                            ])
+                            ->paginate($rowCount);
         } else {
-            $data = Payment::where('sale_id', $saleId)->where('payment_type_id', $paymentTypeId)->where('cash_collected_by', $operatorId)->paginate($rowCount);
+            $data = Payment::where('sale_id', $saleId)
+                            ->where('payment_type_id', $paymentTypeId)
+                            ->where('cash_collected_by', $operatorId)
+                            ->with([
+                                'branch' => function ($q) {
+                                    $q->select('id', 'name');
+                                },
+                                'payment_type' => function ($q) {
+                                    $q->select('id', 'name');
+                                },
+                                'sale' => function ($q) {
+                                    $q->select('id', 'voucher_no', 'date', 'total_amount');
+                                },
+                                'cash_collector' => function ($q) {
+                                    $q->select('id', 'name', 'username');
+                                }
+                            ])
+                            ->paginate($rowCount);
         }
         return $this->sendResponse('Payment Search Success', $data);
     }

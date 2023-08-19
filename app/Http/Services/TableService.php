@@ -17,7 +17,11 @@ class TableService extends BaseController
 
     public function index($request)
     {
-        $data = Table::with(['branch'])->paginate($request['row_count']);
+        $data = Table::with([
+                    'branch' => function($query){
+                        $query->select('id','name');
+                    }])
+                    ->paginate($request['row_count']);
         return $this->sendResponse('Table Index Success', $data);
     }
 
@@ -33,7 +37,16 @@ class TableService extends BaseController
 
     public function edit($request)
     {
-        $data = $this->table->where('id', $request['id'])->whereNull('deleted_at')->first();
+        $data = $this
+                ->table
+                ->where('id', $request['id'])
+                ->whereNull('deleted_at')
+                ->with([
+                    'branch' => function ($query) {
+                        $query->select('id', 'name');
+                    }
+                ])
+                ->first();
         if (!$data) {
             return $this->sendResponse('Table Not Found');
         }
@@ -65,9 +78,22 @@ class TableService extends BaseController
         $branchId =  $request['branch_id'];
         $rowCount = !$rowCount ? null : $rowCount;
         if($request['branch_id']){
-            $data = Table::where('table_no', 'like', "%$keyword%")->where('branch_id', $branchId)->paginate($rowCount);
+            $data = Table::where('table_no', 'like', "%$keyword%")
+                            ->where('branch_id', $branchId)
+                            ->with([
+                                'branch' => function ($query) {
+                                    $query->select('id', 'name');
+                                }
+                            ])
+                            ->paginate($rowCount);
         }else{
-            $data = Table::where('table_no', 'like', "%$keyword%")->paginate($rowCount);
+            $data = Table::where('table_no', 'like', "%$keyword%")
+                            ->with([
+                                'branch' => function ($query) {
+                                    $query->select('id', 'name');
+                                }
+                            ])
+                            ->paginate($rowCount);
         }
         return $this->sendResponse('Table Search Success', $data);
     }

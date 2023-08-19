@@ -14,7 +14,9 @@ class CategoryService extends BaseController{
 
     public function index($request)
     {
-        $data = Category::with("branch")->paginate($request['row_count']);
+        $data = Category::with(["branch" => function($q){
+            $q->select('id','name');
+        }])->paginate($request['row_count']);
         return $this->sendResponse('Caregory Index Success', $data);
     }
 
@@ -30,7 +32,11 @@ class CategoryService extends BaseController{
 
     public function edit($request)
     {
-        $data = $this->category->where('id', $request['id'])->whereNull('deleted_at')->first();
+        $data = $this->category->where('id', $request['id'])
+            ->with(["branch" => function($q){
+                $q->select('id','name');
+            }])
+            ->whereNull('deleted_at')->first();
         if (!$data) {
             return $this->sendResponse('Category Not Found');
         }
@@ -60,7 +66,11 @@ class CategoryService extends BaseController{
         $keyword = $request['keyword'];
         $rowCount = $request['row_count'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = Category::where('name', 'like', "%$keyword%")->paginate($rowCount);
+        $data = Category::where('name', 'like', "%$keyword%")
+            ->with(["branch" => function($q){
+                $q->select('id','name');
+            }])
+            ->paginate($rowCount);
         return $this->sendResponse('Category Search Success', $data);
     }
 }

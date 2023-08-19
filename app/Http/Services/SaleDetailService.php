@@ -24,13 +24,14 @@ class SaleDetailService extends BaseController
 
         // retrive specific columns from  a single related model
         $data = SaleDetail::with([
-            'sale' => function($query){
-                $query->select('id','voucher_no','total_amount');
-            },
-            'product' =>function($query){
-                $query->select('id','category_id','name','image');
-            }
-        ])->paginate($request['row_count']);
+                                'sale' => function($query){
+                                    $query->select('id','voucher_no','total_amount');
+                                },
+                                'product' =>function($query){
+                                    $query->select('id','category_id','name','image');
+                                }
+                            ])
+                            ->paginate($request['row_count']);
 
         return $this->sendResponse('Sale Detail Index Success', $data);
     }
@@ -48,21 +49,21 @@ class SaleDetailService extends BaseController
     public function edit($request)
     {
 
-        // $user = User::where('id', 1)->with('posts')->first();
-        // $posts = $user->posts;
-        // $user = collect($user)->forgot('posts')->all(); // this is what you must do. Be careful, this is now an array.
-        // return response(['user' => $user, 'posts' => $posts]);
-
-
-        $data = $this->saleDetail->where('id', $request['id'])->whereNull('deleted_at')->first();
+        $data = $this
+                ->saleDetail
+                ->where('id', $request['id'])
+                ->whereNull('deleted_at')
+                ->with(['sale' => function ($query){
+                    $query->select('id','voucher_no','total_amount');
+                },
+                'product' => function($query){
+                    $query->select('id','category_id','name','image');
+                }
+                ])
+                ->first();
         if (!$data) {
             return $this->sendResponse('Sale Detail Not Found');
         }
-        //  $users = User::with('posts')->get()
-        //  return UserResource::collection($users);
-        // $data = SaleDetailResource::collection($data);
-        // $data = SaleDetailResource::collection($data)->response()->getData(true);
-
         return $this->sendResponse('Sale Detail Edit Success', $data);
     }
 
@@ -90,7 +91,16 @@ class SaleDetailService extends BaseController
         $saleId =  $request['sale_id'];
         $productId =  $request['product_id'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = SaleDetail::where('product_id', $productId)->where('sale_id', $saleId)->paginate($rowCount);
+        $data = SaleDetail::where('product_id', $productId)
+                            ->where('sale_id', $saleId)
+                            ->with(['sale' => function ($query){
+                                $query->select('id','voucher_no','total_amount');
+                            },
+                            'product' => function($query){
+                                $query->select('id','category_id','name','image');
+                            }
+                            ])
+                            ->paginate($rowCount);
 
         return $this->sendResponse('Sale Detail Search Success', $data);
     }

@@ -16,7 +16,9 @@ class AddToCartService extends BaseController
 
     public function index($request)
     {
-        $data = AddToCart::with(['user'])->paginate($request['row_count']);
+        $data = AddToCart::with(['user' => function($query){
+                                    $query->select('id','name','username','address','phone_no','point','email');
+                                }])->paginate($request['row_count']);
         return $this->sendResponse('Add To Cart Index Success', $data);
     }
 
@@ -32,7 +34,14 @@ class AddToCartService extends BaseController
 
     public function edit($request)
     {
-        $data = $this->addToCart->where('id', $request['id'])->whereNull('deleted_at')->first();
+        $data = $this
+                ->addToCart
+                ->where('id', $request['id'])
+                ->whereNull('deleted_at')
+                ->with(['user' => function ($query) {
+                    $query->select('id', 'name', 'username', 'address', 'phone_no', 'point', 'email');
+                }])
+                ->first();
         if (!$data) {
             return $this->sendResponse('Data Not Found');
         }
@@ -62,7 +71,11 @@ class AddToCartService extends BaseController
         $rowCount = $request['row_count'];
         $userId =  $request['user_id'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = AddToCart::where('user_id', $userId)->paginate($rowCount);
+        $data = AddToCart::where('user_id', $userId)
+                            ->with(['user' => function ($query) {
+                                $query->select('id', 'name', 'username', 'address', 'phone_no', 'point', 'email');
+                            }])
+                            ->paginate($rowCount);
 
         return $this->sendResponse('Add To Cart Search Success', $data);
     }

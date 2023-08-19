@@ -16,7 +16,15 @@ class AddToCartDetailService extends BaseController
 
     public function index($request)
     {
-        $data = AddToCartDetail::with([ 'product'])->paginate($request['row_count']);
+        $data = AddToCartDetail::with([
+                                'product'=>function($query){
+                                    $query->select('id','name','image','category_id');
+                                },
+                                'add_to_cart' => function ($query){
+                                    $query->select('id','date','user_id','total_amount');
+                                }
+                                ])
+                                ->paginate($request['row_count']);
         return $this->sendResponse('Add To Cart Detail Index Success', $data);
     }
 
@@ -32,7 +40,19 @@ class AddToCartDetailService extends BaseController
 
     public function edit($request)
     {
-        $data = $this->addToCartDetail->where('id', $request['id'])->whereNull('deleted_at')->first();
+        $data = $this
+                ->addToCartDetail
+                ->where('id', $request['id'])
+                ->whereNull('deleted_at')
+                ->with([
+                    'product' => function ($query) {
+                        $query->select('id', 'name', 'image', 'category_id');
+                    },
+                    'add_to_cart' => function ($query) {
+                        $query->select('id', 'date', 'user_id', 'total_amount');
+                    }
+                ])
+                ->first();
         if (!$data) {
             return $this->sendResponse('Data Not Found');
         }
@@ -63,7 +83,17 @@ class AddToCartDetailService extends BaseController
         $addToCartId =  $request['add_to_cart_id'];
         $productId =  $request['product_id'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = AddToCartDetail::where('add_to_cart_id', $addToCartId)->where('product_id', $productId)->paginate($rowCount);
+        $data = AddToCartDetail::where('add_to_cart_id', $addToCartId)
+                                ->where('product_id', $productId)
+                                ->with([
+                                    'product' => function ($query) {
+                                        $query->select('id', 'name', 'image', 'category_id');
+                                    },
+                                    'add_to_cart' => function ($query) {
+                                        $query->select('id', 'date', 'user_id', 'total_amount');
+                                    }
+                                ])
+                                ->paginate($rowCount);
 
         return $this->sendResponse('Add To Cart Detail Search Success', $data);
     }

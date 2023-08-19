@@ -16,7 +16,15 @@ class KitchenService extends BaseController
 
     public function index($request)
     {
-        $data = Kitchen::with(['branch','operator'])->paginate($request['row_count']);
+        $data = Kitchen::with([
+                'branch' => function($query){
+                    $query->select('id','name');
+                },
+                'operator' => function ($query){
+                    $query->select('id','name','username');
+                }
+                ])
+            ->paginate($request['row_count']);
         return $this->sendResponse('Kitchen Index Success', $data);
     }
 
@@ -32,7 +40,19 @@ class KitchenService extends BaseController
 
     public function edit($request)
     {
-        $data = $this->kitchen->where('id',$request['id'])->whereNull('deleted_at')->first();
+        $data = $this
+                ->kitchen
+                ->where('id',$request['id'])
+                ->whereNull('deleted_at')
+                ->with([
+                    'branch' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'operator' => function ($query) {
+                        $query->select('id', 'name', 'username');
+                    }
+                ])
+                ->first();
         if(!$data)
         {
             return $this->sendResponse('Kitchen Not Found');
@@ -65,7 +85,18 @@ class KitchenService extends BaseController
         $operatorId = $request['operator_id'];
         $branchId = $request['branch_id'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = Kitchen::where('name','like',"%$keyword%")->orWhere('branch_id',$branchId)->orWhere('operator_id',$operatorId)->paginate($rowCount);
+        $data = Kitchen::where('name','like',"%$keyword%")
+                        ->orWhere('branch_id',$branchId)
+                        ->orWhere('operator_id',$operatorId)
+                        ->with([
+                            'branch' => function ($query) {
+                                $query->select('id', 'name');
+                            },
+                            'operator' => function ($query) {
+                                $query->select('id', 'name', 'username');
+                            }
+                        ])
+                        ->paginate($rowCount);
         return $this->sendResponse('Kitchen Search Success',$data);
     }
 }

@@ -23,7 +23,10 @@ class OperatorService extends BaseController{
         // $data = $this->operator->get();
         // $data = OperatorResource::collection($data->items())->response()->getData(true);
 
-        $data= Operator::with('branch')->paginate($request['row_count']);
+        $data= Operator::with(['branch'=>function($q){
+                            $q->select('id','name');
+                        }])
+                        ->paginate($request['row_count']);
         return $this->sendResponse('Operator Index Success',$data);
     }
 
@@ -45,7 +48,13 @@ class OperatorService extends BaseController{
 
     public function edit($request)
     {
-        $data = $this->operator->where('id',$request['id'])->first();
+        $data = $this
+                ->operator
+                ->where('id',$request['id'])
+                ->with(['branch' => function ($q) {
+                    $q->select('id', 'name');
+                }])
+                ->first();
         if (!$data) {
             return $this->sendResponse("There is no data with");
         }
@@ -86,11 +95,17 @@ class OperatorService extends BaseController{
             $data = Operator::with('branch')
             ->where('name', 'like', "%$keyword%")
             ->orwhere('username', 'link', "%$keyword%")
+            ->with(['branch' => function ($q) {
+                $q->select('id', 'name');
+            }])
             ->paginate();
         }else{
             $data = Operator::with('branch')
                 ->where('name', 'like', "%$keyword%")
                 ->orwhere('username','link',"%$keyword%")
+                ->with(['branch' => function ($q) {
+                    $q->select('id', 'name');
+                }])
                 ->paginate($rowCount);
         }
         return $this->sendResponse('Operator Search Success',$data);
@@ -103,7 +118,7 @@ class OperatorService extends BaseController{
     public function changePassword(array $request)
     {
         // dd($request);
-        
+
         $operatorId = $request['operator_id'];
         $operatorInfo = $this->operator->where('id',$operatorId)->first();
         if(!$operatorInfo || !Hash::check($request['old_password'],$operatorInfo->password)){

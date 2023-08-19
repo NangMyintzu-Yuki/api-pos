@@ -45,7 +45,20 @@ class ProductImageService extends BaseController
 
     public function edit($request)
     {
-        $data = $this->productImage->where('id', $request['id'])->whereNull('deleted_at')->first();
+        $data = $this->productImage->where('id', $request['id'])
+        ->whereNull('deleted_at')
+        ->with([
+                'branch' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'category' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'product' => function ($query){
+                    $query->select('id','name','price');
+                }
+            ])
+        ->first();
         if (!$data) {
             return $this->sendResponse('Product Image Not Found');
         }
