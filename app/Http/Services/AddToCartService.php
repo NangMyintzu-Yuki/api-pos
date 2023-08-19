@@ -60,6 +60,10 @@ class AddToCartService extends BaseController
 
     public function delete($request)
     {
+        $id = $this->addToCart->find($request['id']);
+        if (!$id) {
+            return $this->sendError("No Record to Delete");
+        }
         $this->deleteById($request['id'], 'add_to_carts');
         return $this->sendResponse('Add To Cart Delete Success');
     }

@@ -84,6 +84,10 @@ class PaymentService extends BaseController
 
     public function delete($request)
     {
+        $id = $this->payment->find($request['id']);
+        if (!$id) {
+            return $this->sendError("No Record to Delete");
+        }
         $this->deleteById($request['id'], 'payments');
         return $this->sendResponse('Payment Delete Success');
     }

@@ -51,6 +51,10 @@ class BranchService extends BaseController{
 
     public function delete($request)
     {
+        $id = $this->branch->find($request['id']);
+        if (!$id) {
+            return $this->sendError("No Record to Delete");
+        }
         $this->deleteById($request['id'],'branches');
         return $this->sendResponse('Branch Delete Success');
     }

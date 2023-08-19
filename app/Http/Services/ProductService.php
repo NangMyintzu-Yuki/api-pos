@@ -90,16 +90,28 @@ class ProductService extends BaseController
 
     public function delete($request)
     {
-        $prevImage = $this->product->where('id', $request['id'])->whereNull('deleted_at')->first();
-        $multiImagePath = "images/products/" . $request['id'];
-        File::deleteDirectory(public_path($multiImagePath));
+        try{
+            $this->product->beginTransation();
+            $id = $this->product->find($request['id']);
+            if (!$id) {
+                return $this->sendError("No Record to Delete");
+            }
+            $prevImage = $this->product->where('id', $request['id'])->whereNull('deleted_at')->first();
+            $multiImagePath = "images/products/" . $request['id'];
+            File::deleteDirectory(public_path($multiImagePath));
 
-        $path = 'images/products/' . $prevImage['image'];
-        if (File::exists($path)) {
-            File::delete($path);
+            $path = 'images/products/' . $prevImage['image'];
+            if (File::exists($path)) {
+                File::delete($path);
+            }
+            $this->deleteById($request['id'],'products');
+
+            $this->product->commit();
+            return $this->sendResponse('Product Delete Success', $multiImagePath);
+        } catch (\Exception $e) {
+            $this->product->rollBack();
+            throw new \Exception($e);
         }
-        $this->deleteById($request['id'],'products');
-        return $this->sendResponse('Product Delete Success', $multiImagePath);
     }
 
     //////////////////////////////////////////////////////////////////////

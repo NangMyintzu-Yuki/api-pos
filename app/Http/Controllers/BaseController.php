@@ -109,4 +109,23 @@ class BaseController extends Controller
     }
 
 
+    ///////////////////////////////////////////////////////////////////////
+
+
+    public function beginTransaction()
+    {
+        DB::beginTransaction();
+    }
+
+    public function rollback()
+    {
+        DB::rollBack();
+    }
+
+    public function commit()
+    {
+        DB::commit();
+    }
+
+
 }

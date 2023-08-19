@@ -65,6 +65,10 @@ class TableService extends BaseController
 
     public function delete($request)
     {
+        $id = $this->table->find($request['id']);
+        if (!$id) {
+            return $this->sendError("No Record to Delete");
+        }
         $this->deleteById($request['id'], 'tables');
         return $this->sendResponse('Table Delete Success');
     }

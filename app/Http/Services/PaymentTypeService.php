@@ -50,6 +50,10 @@ class PaymentTypeService extends BaseController
 
     public function delete($request)
     {
+        $id = $this->paymentType->find($request['id']);
+        if (!$id) {
+            return $this->sendError("No Record to Delete");
+        }
         if(isset($request['id'])){
 
             $this->deleteById($request['id'], 'payment_types');

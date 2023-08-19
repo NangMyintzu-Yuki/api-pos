@@ -79,6 +79,10 @@ class SaleDetailService extends BaseController
 
     public function delete($request)
     {
+        $id = $this->saleDetail->find($request['id']);
+        if (!$id) {
+            return $this->sendError("No Record to Delete");
+        }
         $this->deleteById($request['id'], 'sale_details');
         return $this->sendResponse('Sale Detail Delete Success');
     }

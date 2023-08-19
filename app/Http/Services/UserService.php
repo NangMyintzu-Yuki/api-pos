@@ -68,6 +68,10 @@ class UserService extends BaseController
 
     public function delete($request)
     {
+        $id = $this->user->find($request['id']);
+        if (!$id) {
+            return $this->sendError("No Record to Delete");
+        }
         $this->deleteById($request['id'],'users');
         return $this->sendResponse('User Delete Success');
     }
