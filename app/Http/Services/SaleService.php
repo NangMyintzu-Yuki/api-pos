@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Sale;
+use Carbon\Carbon;
 
 class SaleService extends BaseController
 {
@@ -72,5 +73,20 @@ class SaleService extends BaseController
             $data = Sale::where('voucher_no', 'like', "%$keyword%")->paginate($rowCount);
         }
         return $this->sendResponse('Sale Search Success', $data);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    public function change_status($request)
+    {
+        $data = $this->sale->where('id',$request['id'])->whereNull('deleted_at')->first();
+        if(!$data)
+        {
+            return $this->sendResponse("Something Wrong");
+        }
+        // $request['updated_by'] = auth()->user()->id;
+        $request['updated_at'] = Carbon::now();
+        $this->updateData($request, 'sales');
+        return $this->sendResponse("Sale Status Update Success");
     }
 }

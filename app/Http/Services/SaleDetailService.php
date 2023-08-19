@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Resources\SaleDetailResource;
 use App\Models\SaleDetail;
 
 class SaleDetailService extends BaseController
@@ -16,7 +17,21 @@ class SaleDetailService extends BaseController
 
     public function index($request)
     {
-        $data = SaleDetail::with(['sale', 'product'])->paginate($request['row_count']);
+
+        // $users = User::with(['posts' => function ($query) {
+        //     $query->select('id', 'user_id', 'title', 'created_at');
+        // }])->get();
+
+        // retrive specific columns from  a single related model
+        $data = SaleDetail::with([
+            'sale' => function($query){
+                $query->select('id','voucher_no','total_amount');
+            },
+            'product' =>function($query){
+                $query->select('id','category_id','name','image');
+            }
+        ])->paginate($request['row_count']);
+
         return $this->sendResponse('Sale Detail Index Success', $data);
     }
 
@@ -32,10 +47,22 @@ class SaleDetailService extends BaseController
 
     public function edit($request)
     {
+
+        // $user = User::where('id', 1)->with('posts')->first();
+        // $posts = $user->posts;
+        // $user = collect($user)->forgot('posts')->all(); // this is what you must do. Be careful, this is now an array.
+        // return response(['user' => $user, 'posts' => $posts]);
+
+
         $data = $this->saleDetail->where('id', $request['id'])->whereNull('deleted_at')->first();
         if (!$data) {
             return $this->sendResponse('Sale Detail Not Found');
         }
+        //  $users = User::with('posts')->get()
+        //  return UserResource::collection($users);
+        // $data = SaleDetailResource::collection($data);
+        // $data = SaleDetailResource::collection($data)->response()->getData(true);
+
         return $this->sendResponse('Sale Detail Edit Success', $data);
     }
 
