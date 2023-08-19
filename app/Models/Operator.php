@@ -50,4 +50,8 @@ class Operator extends Model
    {
     return $this->hasMany(Kitchen::class);
    }
+    public function payment()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

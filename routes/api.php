@@ -8,6 +8,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
@@ -213,5 +214,18 @@ Route::prefix('add_to_cart_detail')->group(function () {
     Route::post('/filter', [AddToCartDetailController::class, 'filter']);
 });
 
+
+///////////////////////////////////////// Sale
+
+Route::prefix('payment')->group(function () {
+    Route::post('/', [PaymentController::class, 'index']);
+    Route::post('/store', [PaymentController::class, 'store']);
+    Route::post('/edit', [PaymentController::class, 'edit']);
+    Route::post('/update', [PaymentController::class, 'update']);
+    Route::post('/delete', [PaymentController::class, 'delete']);
+    Route::post('/filter', [PaymentController::class, 'filter']);
+    Route::post('/change_status', [PaymentController::class, 'change_status']);
+    Route::post('/make_invoice', [PaymentController::class, 'make_invoice']);
+});
 
 

@@ -20,4 +20,8 @@ class PaymentType extends Model
             "deleted_at",
     ];
     public $timestamps = false;
+    public function payment()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

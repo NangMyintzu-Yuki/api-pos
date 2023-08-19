@@ -6,18 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Sale extends Model
+class Payment extends Model
 {
     use HasFactory,SoftDeletes;
     protected $fillable = [
+        "payment_type_id",
+        "sale_id",
+        "cash_collected_by",
         "branch_id",
-        "voucher_no",
-        "date",
-        "total_amount",
-        "user_id",
-        "table_id",
-        "user_qty",
-        "order_type",
         "status",
         "created_by",
         "updated_by",
@@ -31,21 +27,16 @@ class Sale extends Model
     {
         return $this->belongsTo(Branch::class);
     }
-    public function user()
+    public function sale()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Sale::class);
     }
-    public function table()
+    public function payment_type()
     {
-        return $this->belongsTo(Table::class);
+        return $this->belongsTo(PaymentType::class);
     }
-    public function sale_detail()
+    public function cash_collector()
     {
-        return $this->hasMany(SaleDetail::class);
+        return $this->belongsTo(Operator::class);
     }
-    public function payment()
-    {
-        return $this->hasMany(Payment::class);
-    }
-
 }
