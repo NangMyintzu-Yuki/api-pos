@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class StoreCategoryRequest extends FormRequest
 {
@@ -23,9 +24,17 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name"=>"required",
-            "parent_id" => "required",
+            // 'unique:branch_id,price'
+            // "name"=>"required",
+            "name"=> [
+                "required",
+                // 'unique:categories,name,except,id'
+                Rule::unique('categories', 'name')->where('branch_id', $this->input('branch_id')),
+
+            ],
+            "parent_id" => "",
             "branch_id"=>"required",
+            "image"=>"required",
             "status"=>""
         ];
     }

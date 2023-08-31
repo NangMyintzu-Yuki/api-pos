@@ -58,7 +58,7 @@ class OperatorService extends BaseController{
         if (!$data) {
             return $this->sendResponse("There is no data with");
         }
-        $data = new OperatorResource($data);
+        // $data = new OperatorResource($data);
         return $this->sendResponse('Operator Edit Success',$data);
     }
 

@@ -32,4 +32,14 @@ class AuthUserService extends BaseController{
         ];
         return $this->sendResponse("User Login Success",$finalToken);
     }
+
+    public function logout($request)
+    {
+        // return $request->user()->currentAccessToken();
+
+        // posUserToken
+        // remove token
+        $request->user()->currentAccessToken()->delete();
+        return $this->sendResponse("Logout Success");
+    }
 }

@@ -21,6 +21,10 @@ class BaseController extends Controller
             "message" => $message,
         ];
         if ($data) {
+
+            // $response[] = [
+            //     "data"=>$data['data']
+            // ];
             $response['data'] = $data;
         }
         return response()->json($response);

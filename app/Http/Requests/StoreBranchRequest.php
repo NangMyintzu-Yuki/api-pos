@@ -22,7 +22,7 @@ class StoreBranchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name"=>"required",
+            "name"=>"required|unique:branches,name",
             "stauts"=>""
         ];
     }

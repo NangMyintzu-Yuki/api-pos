@@ -24,7 +24,8 @@ class UpdateCategoryRequest extends FormRequest
         return [
             "id"=>"required",
             "name" => "",
-            "parent_id" => "",
+            "image"=>"",
+            "parent_id" => "not_in:null",
             "branch_id" => "",
             "status" => ""
         ];

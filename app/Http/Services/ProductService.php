@@ -91,7 +91,7 @@ class ProductService extends BaseController
     public function delete($request)
     {
         try{
-            $this->product->beginTransation();
+            $this->beginTransation();
             $id = $this->product->find($request['id']);
             if (!$id) {
                 return $this->sendError("No Record to Delete");
@@ -106,10 +106,10 @@ class ProductService extends BaseController
             }
             $this->deleteById($request['id'],'products');
 
-            $this->product->commit();
+            $this->commit();
             return $this->sendResponse('Product Delete Success', $multiImagePath);
         } catch (\Exception $e) {
-            $this->product->rollBack();
+            $this->rollBack();
             throw new \Exception($e);
         }
     }

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OperatorCheck
+class UserCheck
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class OperatorCheck
     {
         $tokenName = auth()->user()->currentAccessToken()->name;
 
-        if ($tokenName == "posOperatorToken") {
+        if ($tokenName == "posUserToken") {
             return $next($request);
         } else {
             return response()->json([

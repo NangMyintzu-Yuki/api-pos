@@ -12,6 +12,7 @@ class Category extends Model
 
     protected $fillable = [
         "name",
+        "image",
         "parent_id",
         "branch_id",
         "status",
@@ -38,5 +39,8 @@ class Category extends Model
     public function product_image()
     {
         return $this->hasMany(ProductImage::class);
+    }
+    public function parent(){
+        return $this->belongsTo(Category::class);
     }
 }

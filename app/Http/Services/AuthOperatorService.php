@@ -39,12 +39,13 @@ class AuthOperatorService extends BaseController{
 
     public function logout($request)
     {
-        // $data = Auth::guard();
-        // return $data;
+        // return $request->user()->currentAccessToken();
 
+        // posUserToken
+        // remove token
+        $request->user()->currentAccessToken()->delete();
         return $this->sendResponse("Logout Success");
 
-        // return $request->user();
     }
 
 
