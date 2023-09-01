@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTableRequest extends FormRequest
 {
@@ -23,7 +24,11 @@ class StoreTableRequest extends FormRequest
     {
         return [
             "branch_id" => "required",
-            "table_no" => "required",
+            // "table_no" => "required|unique:tables,table_no",
+            "table_no" => [
+                "required",
+                Rule::unique('tables', 'table_no')->where('branch_id', $this->input('branch_id'))->whereNull('deleted_at'),
+            ],
             "status" => ""
         ];
     }

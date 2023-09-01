@@ -22,7 +22,7 @@ class StorePaymentTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name"=>"required",
+            "name"=>"required|unique:payment_types,name",
             "status"=>""
         ];
     }
