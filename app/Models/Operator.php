@@ -54,4 +54,8 @@ class Operator extends Model
     {
         return $this->hasMany(Payment::class);
     }
+    public function ingredient()
+    {
+        return $this->belongsTo(Ingredient::class);
+    }
 }

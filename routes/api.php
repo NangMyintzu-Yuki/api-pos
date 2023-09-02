@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthOperatorController;
 use App\Http\Controllers\AuthUserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\PaymentController;
@@ -243,6 +244,16 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
         Route::post('/filter', [PaymentController::class, 'filter']);
         Route::post('/change_status', [PaymentController::class, 'change_status']);
         Route::post('/make_invoice', [PaymentController::class, 'make_invoice']);
+    });
+    ///////////////////////////////////////// Sale
+
+    Route::prefix('ingredient')->group(function () {
+        Route::post('/', [IngredientController::class, 'index']);
+        Route::post('/store', [IngredientController::class, 'store']);
+        Route::post('/edit', [IngredientController::class, 'edit']);
+        Route::post('/update', [IngredientController::class, 'update']);
+        Route::post('/delete', [IngredientController::class, 'delete']);
+        Route::post('/filter', [IngredientController::class, 'filter']);
     });
 
 
