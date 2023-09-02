@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->unsignedInteger('category_id')->nullable();
-            $table->string('image')->nullable();
+            $table->longText('image')->nullable();
             $table->string('price')->nullable();
             $table->unsignedInteger('branch_id')->nullable();
             $table->unsignedInteger('status')->nullable()->default(1);

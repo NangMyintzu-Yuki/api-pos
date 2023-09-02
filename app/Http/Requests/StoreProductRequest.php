@@ -24,9 +24,11 @@ class StoreProductRequest extends FormRequest
         return [
             "name"=>"required",
             "category_id" => "required",
-            "image"=>"required|image|mimes:jpg,jpeg,png,svg,gif",
+            "image"=>"required",
+            // "image"=>"required|image|mimes:jpg,jpeg,png,svg,gif",
             "price"=>"required",
             "branch_id" => "required",
+            "ingredient_id"=>"",
             "status"=>"",
         ];
     }
