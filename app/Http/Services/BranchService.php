@@ -4,9 +4,23 @@ namespace App\Http\Services;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Branch;
+use App\Models\Category;
+use App\Models\Kitchen;
+use App\Models\Operator;
+use App\Models\Payment;
+use App\Models\Product;
+use App\Models\Table;
 
 class BranchService extends BaseController{
-    public function __construct(private Branch $branch)
+    public function __construct(
+        private Branch $branch,
+        private Product $product,
+        private Category $category,
+        private Operator $operator,
+        private Kitchen $kitchen,
+        private Table $table,
+        private Payment $payment,
+        )
     {
 
     }
@@ -51,12 +65,29 @@ class BranchService extends BaseController{
 
     public function delete($request)
     {
-        $id = $this->branch->find($request['id']);
-        if (!$id) {
-            return $this->sendError("No Record to Delete");
+        try {
+            $this->beginTransaction();
+            //code...
+            $id = $this->branch->find($request['id']);
+            if (!$id) {
+                return $this->sendError("No Record to Delete");
+            }
+            $product = $this->product->where('branch_id',$request['id'])->first();
+            $category = $this->category->where('branch_id',$request['id'])->first();
+            $operator = $this->operator->where('branch_id',$request['id'])->first();
+            $kitchen = $this->kitchen->where('branch_id',$request['id'])->first();
+            $table = $this->table->where('branch_id',$request['id'])->first();
+            $payment = $this->payment->where('branch_id',$request['id'])->first();
+            if($product || $category || $operator || $kitchen || $table || $payment){
+                return $this->sendError("This Branch has already used. Can't delete!!");
+            }
+            $this->deleteById($request['id'],'branches');
+            $this->commit();
+            return $this->sendResponse('Branch Delete Success');
+        } catch (\Exception $e) {
+            $this->rollback();
+            throw new \Exception($e);
         }
-        $this->deleteById($request['id'],'branches');
-        return $this->sendResponse('Branch Delete Success');
     }
 
     /////////////////////////////////////////////////////////////////////////////////////

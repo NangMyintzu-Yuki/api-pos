@@ -59,7 +59,7 @@ class BaseController extends Controller
 
     public function insertData(array $params, $modal)
     {
-        // $params['created_by'] = request()->name;
+        $params['created_by'] = auth()->user()->id;
         $params['created_at'] = Carbon::now();
         $query = DB::table($modal)->insert($params);
         return $query;
@@ -71,7 +71,7 @@ class BaseController extends Controller
 
     public function insertGetId(array $params, $modal)
     {
-        // $params['created_by'] = request()->name;
+        $params['created_by'] = auth()->user()->id;
         $params['created_at'] = Carbon::now();
         $id = DB::table($modal)->insertGetId($params);
         return $id;
@@ -83,6 +83,9 @@ class BaseController extends Controller
 
     public function updateData(array $params, $modal)
     {
+        // info(auth()->user()->id);
+        $params['updated_by'] = auth()->user()->id;
+
         $params['updated_at'] = Carbon::now();
         $query = DB::table($modal)->where('id',$params['id'])->update($params);
         return $query;
@@ -94,7 +97,7 @@ class BaseController extends Controller
 
     public function deleteById($id, $modal)
     {
-        // $params['deleted_by'] = ;
+        $params['deleted_by'] = auth()->user()->id;
         $params['deleted_at'] = Carbon::now();
         $query = DB::table($modal)->where('id', $id)->update($params);
         return $query;
@@ -104,9 +107,18 @@ class BaseController extends Controller
     ///////////////////////////////////////////////////////////////////
 
 
+    public function deletedByAttr($attr, $val, $modal)
+    {
+        $params['deleted_by'] = auth()->user()->id;
+        $params['deleted_at'] = Carbon::now();
+        $query = DB::table($modal)->where($attr,$val)->update($params);
+        return $query;
+    }
+
+
     public function forceDeleteById($id, $modal)
     {
-        // $params['deleted_by'] = ;
+        $params['deleted_by'] = auth()->user()->id;
         $params['deleted_at'] = Carbon::now();
         $query = DB::table($modal)->where('id',$id)->delete();
         return $query;

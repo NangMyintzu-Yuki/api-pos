@@ -4,14 +4,35 @@ namespace App\Http\Services;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Resources\OperatorResource;
+use App\Models\Branch;
+use App\Models\Category;
+use App\Models\Ingredient;
+use App\Models\Kitchen;
 use App\Models\Operator;
+use App\Models\Payment;
+use App\Models\PaymentType;
+use App\Models\Product;
+use App\Models\Sale;
+use App\Models\Table;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
-class OperatorService extends BaseController{
-    public function __construct(private Operator $operator)
-    {
-
+class OperatorService extends BaseController
+{
+    public function __construct(
+        private Operator $operator,
+        private Branch $branch,
+        private Category $category,
+        private Ingredient $ingredient,
+        private Kitchen $kitchen,
+        private PaymentType $paymentType,
+        private Payment $payment,
+        private Table $table,
+        private Product $product,
+        private Sale $sale,
+        private User $user,
+    ) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -23,11 +44,11 @@ class OperatorService extends BaseController{
         // $data = $this->operator->get();
         // $data = OperatorResource::collection($data->items())->response()->getData(true);
 
-        $data= Operator::with(['branch'=>function($q){
-                            $q->select('id','name');
-                        }])
-                        ->paginate($request['row_count']);
-        return $this->sendResponse('Operator Index Success',$data);
+        $data = Operator::with(['branch' => function ($q) {
+            $q->select('id', 'name');
+        }])
+            ->paginate($request['row_count']);
+        return $this->sendResponse('Operator Index Success', $data);
     }
 
 
@@ -49,17 +70,17 @@ class OperatorService extends BaseController{
     public function edit($request)
     {
         $data = $this
-                ->operator
-                ->where('id',$request['id'])
-                ->with(['branch' => function ($q) {
-                    $q->select('id', 'name');
-                }])
-                ->first();
+            ->operator
+            ->where('id', $request['id'])
+            ->with(['branch' => function ($q) {
+                $q->select('id', 'name');
+            }])
+            ->first();
         if (!$data) {
             return $this->sendResponse("There is no data with");
         }
         // $data = new OperatorResource($data);
-        return $this->sendResponse('Operator Edit Success',$data);
+        return $this->sendResponse('Operator Edit Success', $data);
     }
 
 
@@ -78,12 +99,35 @@ class OperatorService extends BaseController{
 
     public function delete($request)
     {
-        $id = $this->operator->find($request['id']);
-        if (!$id) {
-            return $this->sendError("No Record to Delete");
+        try {
+            $this->beginTransaction();
+            $id = $this->operator->find($request['id']);
+            if (!$id) {
+                return $this->sendError("No Record to Delete");
+            }
+
+            $branch = $this->branch->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+            $category = $this->category->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+            $ingredient = $this->ingredient->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+            $paymentType = $this->paymentType->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+            $payment = $this->payment->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+            $table = $this->table->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+            $product = $this->product->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+            $sale = $this->sale->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+            $kitchen = $this->kitchen->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+            $user = $this->user->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
+
+            if ($branch || $category || $ingredient || $payment || $paymentType || $table || $product || $sale || $kitchen || $user) {
+                return $this->sendError("This Operator has already used. Can't delete!!");
+            }
+
+            $this->deleteById($request['id'], 'operators');
+            $this->commit();
+            return $this->sendResponse('Operator Delete Success');
+        } catch (\Exception $e) {
+            $this->rollback();
+            throw new \Exception($e);
         }
-        $this->deleteById($request['id'],'operators');
-        return $this->sendResponse('Operator Delete Success');
     }
 
 
@@ -95,24 +139,24 @@ class OperatorService extends BaseController{
     {
         $keyword = $request['keyword'];
         $rowCount = $request['row_count'];
-        if(!$rowCount){
-            $data = Operator::with('branch')
-            ->where('name', 'like', "%$keyword%")
-            ->orwhere('username', 'link', "%$keyword%")
-            ->with(['branch' => function ($q) {
-                $q->select('id', 'name');
-            }])
-            ->paginate();
-        }else{
+        if (!$rowCount) {
             $data = Operator::with('branch')
                 ->where('name', 'like', "%$keyword%")
-                ->orwhere('username','link',"%$keyword%")
+                ->orwhere('username', 'link', "%$keyword%")
+                ->with(['branch' => function ($q) {
+                    $q->select('id', 'name');
+                }])
+                ->paginate();
+        } else {
+            $data = Operator::with('branch')
+                ->where('name', 'like', "%$keyword%")
+                ->orwhere('username', 'link', "%$keyword%")
                 ->with(['branch' => function ($q) {
                     $q->select('id', 'name');
                 }])
                 ->paginate($rowCount);
         }
-        return $this->sendResponse('Operator Search Success',$data);
+        return $this->sendResponse('Operator Search Success', $data);
     }
 
 
@@ -124,8 +168,8 @@ class OperatorService extends BaseController{
         // dd($request);
 
         $operatorId = $request['operator_id'];
-        $operatorInfo = $this->operator->where('id',$operatorId)->first();
-        if(!$operatorInfo || !Hash::check($request['old_password'],$operatorInfo->password)){
+        $operatorInfo = $this->operator->where('id', $operatorId)->first();
+        if (!$operatorInfo || !Hash::check($request['old_password'], $operatorInfo->password)) {
             return $this->sendError(("Password Incorrect!"));
         }
         $operatorInfo->update([
@@ -135,5 +179,4 @@ class OperatorService extends BaseController{
         ]);
         return $this->sendResponse('Operator Password Change Success');
     }
-
 }

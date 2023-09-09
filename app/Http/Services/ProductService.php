@@ -7,13 +7,16 @@ use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductIngredient;
+use App\Models\SaleDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 class ProductService extends BaseController
 {
-    public function __construct(private Product $product)
-    {
+    public function __construct(
+        private Product $product,
+        private SaleDetail $saleDetail,
+    ) {
     }
 
     ///////////////////////////////////////////////////////////////////
@@ -149,6 +152,10 @@ class ProductService extends BaseController
             // ProductImage::where('product_id',$request['id'])->delete();
             // ProductIngredient::where('product_id',$request['id'])->delete();
 
+            $saleDetail = $this->saleDetail->where('product_id', $request['id'])->first();
+            if ($saleDetail) {
+                return $this->sendError("This Product has already used. Can't delete!!");
+            }
             $this->deleteById($request['id'], 'products');
 
             $this->commit();
@@ -175,7 +182,8 @@ class ProductService extends BaseController
                 },
                 'category' => function ($query) {
                     $query->select('id', 'name');
-                }
+                },
+                'product_image', "ingredients"
             ])
             ->paginate($rowCount);
         return $this->sendResponse('Product Search Success', $data);

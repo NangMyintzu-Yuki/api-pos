@@ -3,11 +3,16 @@
 namespace App\Http\Services;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Sale;
 use App\Models\Table;
+use Carbon\Carbon;
 
 class TableService extends BaseController
 {
-    public function __construct(private Table $table)
+    public function __construct(
+        private Table $table,
+        private Sale $sale,
+        )
     {
 
     }
@@ -65,15 +70,47 @@ class TableService extends BaseController
 
     public function delete($request)
     {
-        $id = $this->table->find($request['id']);
-        if (!$id) {
-            return $this->sendError("No Record to Delete");
+        try{
+            $this->beginTransaction();
+            $id = $this->table->find($request['id']);
+            if (!$id) {
+                return $this->sendError("No Record to Delete");
+            }
+            $sale = $this->sale->where('table_id',$request['id'])->first();
+            if($sale){
+                return $this->sendError("This Table has already used. Can't delete!!");
+            }
+            $this->deleteById($request['id'], 'tables');
+            $this->commit();
+            return $this->sendResponse('Table Delete Success');
+        } catch (\Exception $e) {
+            $this->rollback();
+            throw new \Exception($e);
         }
-        $this->deleteById($request['id'], 'tables');
-        return $this->sendResponse('Table Delete Success');
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
+
+
+    public function change_status($request)
+    {
+        $data = $this->table->where('id', $request['id'])->whereNull('deleted_at')->first();
+        if (!$data) {
+            return $this->sendResponse("Table Not Found");
+        }
+        // $request['updated_by'] = auth()->user()->id;
+        $request['updated_at'] = Carbon::now();
+        $this->updateData($request, 'tables');
+        return $this->sendResponse("Table Status Update Success");
+    }
+
+
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
 
     public function filterTable($request)
     {

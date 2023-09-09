@@ -4,12 +4,17 @@ namespace App\Http\Services;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Ingredient;
+use App\Models\Product;
+use App\Models\ProductIngredient;
 use Exception;
 use Illuminate\Support\Facades\File;
 
 class IngredientService extends BaseController
 {
-    public function __construct(private Ingredient $ingredient)
+    public function __construct(
+        private Ingredient $ingredient,
+        private ProductIngredient $productIngredient,
+        )
     {
     }
 
@@ -60,13 +65,20 @@ class IngredientService extends BaseController
     public function delete($request)
     {
         try {
+            $this->beginTransaction();
             $id = $this->ingredient->find($request['id']);
             if (!$id) {
                 return $this->sendError("No Record to Delete");
             }
+            $product = $this->productIngredient->where('ingredient_id', $request['id'])->first();
+            if($product){
+                return $this->sendError("This Ingredient has already used. Can't delete!!");
+            }
             $this->deleteById($request['id'], 'ingredients');
+            $this->commit();
             return $this->sendResponse('Ingredient Delete Success');
         } catch (\Exception $e) {
+            $this->rollback();
             throw new \Exception($e);
         }
     }

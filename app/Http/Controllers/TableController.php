@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangeTableStatusRequest;
 use App\Http\Requests\StoreTableRequest;
 use App\Http\Requests\UpdateTableRequest;
 use App\Http\Services\TableService;
@@ -35,5 +36,9 @@ class TableController extends Controller
     public function filter(Request $request)
     {
         return $this->tableService->filterTable($request);
+    }
+    public function change_status(ChangeTableStatusRequest $request)
+    {
+        return $this->tableService->change_status($request->validated());
     }
 }

@@ -1,21 +1,24 @@
 <?php
+
 namespace App\Http\Services;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Payment;
 use App\Models\PaymentType;
 
 class PaymentTypeService extends BaseController
 {
-    public function __construct(private PaymentType $paymentType)
-    {
-
+    public function __construct(
+        private PaymentType $paymentType,
+        private Payment $payment,
+    ) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
 
     public function index($request)
     {
-        $data = $this->getAll('payment_types',$request['row_count']);
+        $data = $this->getAll('payment_types', $request['row_count']);
         return $this->sendResponse('Payment Type Index Success', $data);
     }
 
@@ -50,16 +53,23 @@ class PaymentTypeService extends BaseController
 
     public function delete($request)
     {
-        $id = $this->paymentType->find($request['id']);
-        if (!$id) {
-            return $this->sendError("No Record to Delete");
-        }
-        if(isset($request['id'])){
+        try {
+            $this->beginTransaction();
+            $id = $this->paymentType->find($request['id']);
+            if (!$id) {
+                return $this->sendError("No Record to Delete");
+            }
 
+            $payment = $this->payment->where('payment_type_id', $request['id'])->first();
+            if ($payment) {
+                return $this->sendError("This Payment Type has already used. Can't delete!!");
+            }
             $this->deleteById($request['id'], 'payment_types');
+            $this->commit();
             return $this->sendResponse('Payment Type Delete Success');
-        }else{
-            return $this->sendError('Id is Required');
+        } catch (\Exception $e) {
+            $this->rollback();
+            throw new \Exception($e);
         }
     }
 
@@ -73,5 +83,4 @@ class PaymentTypeService extends BaseController
         $data = PaymentType::where('name', 'like', "%$keyword%")->paginate($rowCount);
         return $this->sendResponse('Payment Type Search Success', $data);
     }
-
 }

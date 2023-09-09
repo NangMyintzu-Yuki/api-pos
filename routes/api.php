@@ -167,6 +167,7 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
         Route::post('/update', [TableController::class, 'update']);
         Route::post('/delete', [TableController::class, 'delete']);
         Route::post('/filter', [TableController::class, 'filter']);
+        Route::post('/change_status', [TableController::class, 'change_status']);
     });
 
 

@@ -4,11 +4,16 @@ namespace App\Http\Services;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Category;
+use App\Models\Product;
 use Exception;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class CategoryService extends BaseController{
-    public function __construct(private Category $category)
+    public function __construct(
+        private Category $category,
+        private Product $product,
+        )
     {
     }
 
@@ -109,6 +114,11 @@ class CategoryService extends BaseController{
             if (File::exists($path)) {
                 File::delete($path);
             }
+            $product  = $this->product->where('category_id',$request['id'])->first();
+
+            if ($product) {
+                return $this->sendError("This Category has already used. Can't delete!!");
+            }
             $this->deleteById($request['id'], 'categories');
             $this->commit();
             return $this->sendResponse('Category Delete Success');
@@ -129,7 +139,11 @@ class CategoryService extends BaseController{
         $data = Category::where('name', 'like', "%$keyword%")
             ->with(["branch" => function($q){
                 $q->select('id','name');
-            }])
+            },
+            "parent" => function ($query) {
+                $query->select('id', 'name');
+            }
+            ])
             ->paginate($rowCount);
         return $this->sendResponse('Category Search Success', $data);
     }

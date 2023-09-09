@@ -32,6 +32,8 @@ class UpdateSaleRequest extends FormRequest
             "user_qty" => "",
             "order_type" => "",
             "status" => "",
+            "orderDetail" => ""
+
         ];
     }
 }
