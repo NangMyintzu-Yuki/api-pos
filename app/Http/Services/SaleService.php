@@ -14,8 +14,7 @@ class SaleService extends BaseController
     public function __construct(
         private Sale $sale,
         private Payment $payment,
-        )
-    {
+    ) {
     }
 
 
@@ -125,8 +124,7 @@ class SaleService extends BaseController
 
     public function update(array $request)
     {
-        info($request);
-        Log::info($request);
+
 
         try {
             $this->beginTransaction();
@@ -147,14 +145,16 @@ class SaleService extends BaseController
             if (isset($request['orderDetail'])) {
                 if (count($request['orderDetail']) > 0) {
                     foreach ($request['orderDetail'] as $detail) {
-                        $saleDetail['sale_id'] = $request['id'];
-                        $saleDetail['product_id'] = $detail['id'];
-                        $saleDetail['price'] = $detail['price'];
-                        $saleDetail['quantity'] = $detail['quantity'];
-                        $saleDetail['amount'] = $detail['price'] * $detail['quantity'];
-                        $saleDetail['status'] = $request['status'];
-                        Log::info($saleDetail);
-                        $this->insertData($saleDetail, 'sale_details');
+                        info($request['orderDetail']);
+                        if($detail != false){
+                            $saleDetail['sale_id'] = $request['id'];
+                            $saleDetail['product_id'] = $detail['id'];
+                            $saleDetail['price'] = $detail['price'];
+                            $saleDetail['quantity'] = $detail['quantity'];
+                            $saleDetail['amount'] = $detail['price'] * $detail['quantity'];
+                            $saleDetail['status'] = $request['status'];
+                            $this->insertData($saleDetail, 'sale_details');
+                        }
                     }
                 }
             }
@@ -181,10 +181,10 @@ class SaleService extends BaseController
                 return $this->sendError("No Record to Delete");
             }
 
-            $this->deletedByAttr('sale_id',$request['id'],'sale_details');
+            $this->deletedByAttr('sale_id', $request['id'], 'sale_details');
 
-            $payment = $this->payment->where('sale_id',$request['id'])->first();
-            if($payment){
+            $payment = $this->payment->where('sale_id', $request['id'])->first();
+            if ($payment) {
                 return $this->sendError("This Payment has already used. Can't delete!!");
             }
             $this->deleteById($request['id'], 'sales');
@@ -194,7 +194,6 @@ class SaleService extends BaseController
             $this->rollback();
             throw new \Exception($e);
         }
-
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -208,11 +207,28 @@ class SaleService extends BaseController
         $tableId =  $request['table_id'];
         $status =  $request['status'];
         $rowCount = !$rowCount ? null : $rowCount;
-        if($status){
-            $data = Sale::where('status', $status)->get();
-        }
-        if ($request['branch_id']) {
-            $data = Sale::where('voucher_no', 'like', "%$keyword%")
+        if ($status && !$branchId) {
+            $data = $this->sale->where('status', $status)->with([
+                'branch' => function ($q) {
+                    $q->select("id", 'name');
+                },
+
+                'user' => function ($q) {
+                    $q->select('id', 'name', 'username', 'address', 'phone_no');
+                },
+                'table' => function ($q) {
+                    $q->select("id", "table_no");
+                },
+                'sale_detail' => with([
+                    'product' => function ($q) {
+                        $q->select('id', 'name');
+                    },
+                ]),
+
+
+            ])->paginate($rowCount);
+        } else if ($request['branch_id']) {
+            $data = $this->sale->where('voucher_no', 'like', "%$keyword%")
                 ->where('user_id', $userId)
                 ->where('table_id', $tableId)
                 ->where('branch_id', $branchId)
@@ -225,11 +241,14 @@ class SaleService extends BaseController
                     },
                     'table' => function ($q) {
                         $q->select("id", "table_no");
-                    }
+                    },
+                    'sale_detail' => with(['product' => function ($q) {
+                        $q->select('id', 'name');
+                    }])
                 ])
                 ->paginate($rowCount);
         } else {
-            $data = Sale::where('voucher_no', 'like', "%$keyword%")
+            $data = $this->sale->where('voucher_no', 'like', "%$keyword%")
                 ->with([
                     'branch' => function ($q) {
                         $q->select("id", 'name');
@@ -239,7 +258,12 @@ class SaleService extends BaseController
                     },
                     'table' => function ($q) {
                         $q->select("id", "table_no");
-                    }
+                    },
+                'sale_detail' => with([
+                    'product' => function ($q) {
+                        $q->select('id', 'name');
+                    },
+                ]),
                 ])
                 ->paginate($rowCount);
         }

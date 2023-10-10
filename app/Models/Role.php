@@ -21,5 +21,9 @@ class Role extends Model
         "deleted_at",
     ];
     public $timestamps = false;
+    public function operator()
+    {
+        return $this->hasMany(Operator::class);
+    }
 
 }

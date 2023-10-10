@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('operators', function (Blueprint $table) {
             $table->id();
-            $table->string('role')->nullable();
+            $table->unsignedInteger('role_id')->nullable();
             $table->string('name')->nullable();
             $table->string('username')->nullable();
             $table->string('password')->nullable();
-            $table->unsignedInteger('branch_id')->nullable();
+            $table->unsignedInteger('branch_id')->nullable()->default(1);
             $table->unsignedInteger('status')->nullable()->default(1);
             $table->unsignedInteger('created_by')->nullable();
             $table->unsignedInteger('updated_by')->nullable();

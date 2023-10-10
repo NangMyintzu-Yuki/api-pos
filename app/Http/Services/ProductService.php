@@ -52,15 +52,20 @@ class ProductService extends BaseController
             // }
 
 
+            info($request);
             $product['branch_id'] = $request['branch_id'];
             $product['category_id'] = $request['category_id'];
             $product['name'] = $request['name'];
             $product['price'] = $request['price'];
+            $product['today_menu'] = $request['today_menu'];
+            $product['special_menu'] = $request['special_menu'];
             $id =  $this->insertGetId($product, 'products');
             $this->insertProductImageData($request, $id);
 
 
-            $this->insertProductIngredientData($request, $id);
+            if (isset($request['ingredient_id'])) {
+                $this->insertProductIngredientData($request, $id);
+            }
 
             $this->commit();
             // return $images;
@@ -109,13 +114,18 @@ class ProductService extends BaseController
             DB::table('product_ingredients')->where('product_id', $request['id'])->delete();
 
             $this->insertProductImageData($request, $request['id']);
-            $this->insertProductIngredientData($request, $request['id']);
+            if (isset($request['ingredient_id'])) {
+
+                $this->insertProductIngredientData($request, $request['id']);
+            }
 
             $product['id'] = $request['id'];
             $product['branch_id'] = $request['branch_id'];
             $product['category_id'] = $request['category_id'];
             $product['name'] = $request['name'];
             $product['price'] = $request['price'];
+            $product['today_menu'] = $request['today_menu'];
+            $product['special_menu'] = $request['special_menu'];
 
             $this->updateData($product, 'products');
             $this->commit();
@@ -174,18 +184,57 @@ class ProductService extends BaseController
         $category = $request['category_id'];
         $rowCount = $request['row_count'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = Product::where('name', 'like', "%$keyword%")
-            ->orWhere('category_id', $category)
-            ->with([
-                'branch' => function ($query) {
-                    $query->select('id', 'name');
-                },
-                'category' => function ($query) {
-                    $query->select('id', 'name');
-                },
-                'product_image', "ingredients"
-            ])
-            ->paginate($rowCount);
+        if(isset($request['keyword']) && isset($request['category_id'])){
+            $data = Product::where('name', 'like', "%$keyword%")
+                ->where('category_id', $category)
+                ->with([
+                    'branch' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'category' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'product_image', "ingredients"
+                ])
+                ->paginate($rowCount);
+        }else if($request['keyword']){
+            $data = Product::where('name', 'like', "%$keyword%")
+                ->with([
+                    'branch' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'category' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'product_image', "ingredients"
+                ])
+                ->paginate($rowCount);
+        }else if($request['category_id']){
+            $data = Product::where('category_id', $category)
+                ->with([
+                    'branch' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'category' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'product_image', "ingredients"
+                ])
+                ->paginate($rowCount);
+        }else{
+            $data = Product::where('name', 'like', "%$keyword%")
+                ->orWhere('category_id', $category)
+                ->with([
+                    'branch' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'category' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'product_image', "ingredients"
+                ])
+                ->paginate($rowCount);
+        }
         return $this->sendResponse('Product Search Success', $data);
     }
 
@@ -209,11 +258,13 @@ class ProductService extends BaseController
             $porductImage['category_id'] = $request['category_id'];
             $porductImage['branch_id'] = $request['branch_id'];
             $porductImage['images'] = $image['image'];
+
             $this->insertData($porductImage, 'product_images');
         }
     }
     public function insertProductIngredientData($request, $id)
     {
+
         foreach ($request['ingredient_id'] as $key => $ingredient) {
             $ingredients[] = [
                 "ingredient_id" => $ingredient

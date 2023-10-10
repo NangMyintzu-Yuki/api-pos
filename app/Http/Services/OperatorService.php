@@ -46,7 +46,11 @@ class OperatorService extends BaseController
 
         $data = Operator::with(['branch' => function ($q) {
             $q->select('id', 'name');
-        }])
+        },
+        "role" => function($q){
+            $q->select('id','name');
+        }
+        ])
             ->paginate($request['row_count']);
         return $this->sendResponse('Operator Index Success', $data);
     }
@@ -74,7 +78,11 @@ class OperatorService extends BaseController
             ->where('id', $request['id'])
             ->with(['branch' => function ($q) {
                 $q->select('id', 'name');
-            }])
+                },
+            "role" => function ($q) {
+                $q->select('id', 'name');
+            }
+            ])
             ->first();
         if (!$data) {
             return $this->sendResponse("There is no data with");
@@ -145,6 +153,9 @@ class OperatorService extends BaseController
                 ->orwhere('username', 'link', "%$keyword%")
                 ->with(['branch' => function ($q) {
                     $q->select('id', 'name');
+                },
+                "role" => function ($q) {
+                    $q->select('id', 'name');
                 }])
                 ->paginate();
         } else {
@@ -152,6 +163,9 @@ class OperatorService extends BaseController
                 ->where('name', 'like', "%$keyword%")
                 ->orwhere('username', 'link', "%$keyword%")
                 ->with(['branch' => function ($q) {
+                    $q->select('id', 'name');
+                },
+                "role" => function ($q) {
                     $q->select('id', 'name');
                 }])
                 ->paginate($rowCount);

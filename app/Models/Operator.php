@@ -11,7 +11,7 @@ class Operator extends Model
 {
     use HasFactory,SoftDeletes,HasApiTokens;
     protected $fillable = [
-        "role",
+        "role_id",
         "name",
         "username",
         "password",
@@ -29,6 +29,10 @@ class Operator extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
     public function user()
     {

@@ -17,7 +17,8 @@ class OperatorCheck
     {
         $tokenName = auth()->user()->currentAccessToken()->name;
 
-        if ($tokenName == "posOperatorToken") {
+        info([$tokenName]);
+        if ($tokenName == "posOperatorToken" || $tokenName == "posUserToken") {
             return $next($request);
         } else {
             return response()->json([

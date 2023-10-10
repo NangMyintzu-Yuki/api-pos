@@ -20,7 +20,7 @@ class OperatorSeeder extends Seeder
             [
                 'name' => 'Super Admin',
                 'username' => 'SuperAdmin',
-                'role' => 1,
+                'role_id' => 1,
                 'branch_id' => 1,
                 'password' => Hash::make('superadminpassword'),
                 'status' => 1,
@@ -30,7 +30,7 @@ class OperatorSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'username' => 'Admin',
-                'role' => 2,
+                'role_id' => 2,
                 'branch_id' => 1,
                 'password' => Hash::make('adminpassword'),
                 'status' => 1,
@@ -40,7 +40,7 @@ class OperatorSeeder extends Seeder
             [
                 'name' => 'Chef',
                 'username' => 'Chef',
-                'role' => 3,
+                'role_id' => 3,
                 'branch_id' => 1,
                 'password' => Hash::make('chefpassword'),
                 'status' => 1,
@@ -50,7 +50,7 @@ class OperatorSeeder extends Seeder
             [
                 'name' => 'Waiter',
                 'username' => 'Waiter',
-                'role' => 4,
+                'role_id' => 4,
                 'branch_id' => 1,
                 'password' => Hash::make('waiterpassword'),
                 'status' => 1,
@@ -60,7 +60,7 @@ class OperatorSeeder extends Seeder
             [
                 'name' => 'Delivery Man',
                 'username' => 'Delivery Man',
-                'role' => 5,
+                'role_id' => 5,
                 'branch_id' => 1,
                 'password' => Hash::make('deliverypassword'),
                 'status' => 1,
@@ -70,7 +70,7 @@ class OperatorSeeder extends Seeder
             [
                 'name' => 'Chaiser',
                 'username' => 'Chaiser',
-                'role' => 6,
+                'role_id' => 6,
                 'branch_id' => 1,
                 'password' => Hash::make('chaiserpassword'),
                 'status' => 1,

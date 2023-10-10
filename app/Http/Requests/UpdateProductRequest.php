@@ -29,6 +29,9 @@ class UpdateProductRequest extends FormRequest
             "price" => "",
             "branch_id" => "",
             "ingredient_id" => "",
+            "today_menu"=>"",
+            "special_menu"=>"",
+            "description"=>"",
             "status" => "",
         ];
     }

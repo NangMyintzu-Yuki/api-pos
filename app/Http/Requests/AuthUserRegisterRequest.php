@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreProductRequest extends FormRequest
+class AuthUserRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,16 +24,10 @@ class StoreProductRequest extends FormRequest
     {
         return [
             "name"=>"required",
-            "category_id" => "required",
-            "image"=>"required",
-            // "image"=>"required|image|mimes:jpg,jpeg,png,svg,gif",
-            "price"=>"required",
-            "branch_id" => "required",
-            "ingredient_id"=>"",
-            "today_menu"=>"",
-            "special_menu"=>"",
-            "description"=>"required",
-            "status"=>"",
+            // "phone_no"=>"required|unique:users,phone_no",
+            "phone_no"=>["required", Rule::unique('users', 'phone_no')->where(fn ($query) => $query->whereNull('deleted_at'))],
+            "address"=>"",
+            "password"=>"required"
         ];
     }
 }

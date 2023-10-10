@@ -88,7 +88,7 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
     Route::prefix('user')->group(function(){
 
         Route::post('/', [UserController::class, 'index']);
-        Route::post('/store', [UserController::class, 'store']);
+        // Route::post('/store', [UserController::class, 'store']);
         Route::post('/edit', [UserController::class, 'edit']);
         Route::post('/update', [UserController::class, 'update']);
         Route::post('/delete', [UserController::class, 'delete']);

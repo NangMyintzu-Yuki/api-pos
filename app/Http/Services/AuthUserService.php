@@ -5,6 +5,8 @@ namespace App\Http\Services;
 use App\Http\Controllers\BaseController;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AuthUserService extends BaseController{
@@ -12,9 +14,13 @@ class AuthUserService extends BaseController{
     {
 
     }
-    public function register($request)
+    public function register(array $request)
     {
-        return "User Register";
+
+        $request['password'] = Hash::make($request['password']);
+        $request['created_at'] = Carbon::now();
+        DB::table('users')->insert($request);
+        return $this->sendResponse('Register Success');
     }
     public function login(array $request)
     {
@@ -25,11 +31,13 @@ class AuthUserService extends BaseController{
         }
         $loginInfo = new UserResource($loginInfo);
         $token = $loginInfo->createToken('posUserToken')->plainTextToken;
+        info([$token]);
         $getToken = strpos($token,"|");
         $finalToken = [
             'loginInfo' => $loginInfo,
             'token' => substr($token,$getToken + 1)
         ];
+        info($finalToken);
         return $this->sendResponse("User Login Success",$finalToken);
     }
 
