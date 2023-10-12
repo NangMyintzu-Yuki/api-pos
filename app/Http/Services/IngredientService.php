@@ -22,7 +22,7 @@ class IngredientService extends BaseController
 
     public function index($request)
     {
-        $data = $this->getAll('ingredients', $request['row_count']);
+        $data = $this->getAll('ingredients', $request['row_count'],'name','asc');
 
         return $this->sendResponse('Ingredient Index Success', $data);
     }
@@ -90,7 +90,7 @@ class IngredientService extends BaseController
         $keyword = $request['keyword'];
         $rowCount = $request['row_count'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = Ingredient::where('name', 'like', "%$keyword%")
+        $data = Ingredient::where('name', 'like', "%$keyword%")->orderBy('name','asc')
             ->paginate($rowCount);
         return $this->sendResponse('Ingredient Search Success', $data);
     }

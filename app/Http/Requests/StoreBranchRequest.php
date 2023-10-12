@@ -23,7 +23,7 @@ class StoreBranchRequest extends FormRequest
     {
         return [
             "name"=>"required|unique:branches,name",
-            "stauts"=>""
+            "status"=>""
         ];
     }
 }

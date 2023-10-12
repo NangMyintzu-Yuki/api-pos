@@ -29,7 +29,7 @@ class BranchService extends BaseController{
 
     public function index($request)
     {
-        $data = $this->getAll('branches',$request['row_count']);
+        $data = $this->getAll('branches',$request['row_count'], 'name', 'asc');
         return $this->sendResponse('Branch Index Success',$data);
     }
 
@@ -97,7 +97,7 @@ class BranchService extends BaseController{
         $keyword = $request['keyword'];
         $rowCount = $request['row_count'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = Branch::where('name','like',"%$keyword%")->paginate($rowCount);
+        $data = Branch::where('name','like',"%$keyword%")->orderBy('name','asc')->paginate($rowCount);
         return $this->sendResponse('Branch Search Success',$data);
     }
 }

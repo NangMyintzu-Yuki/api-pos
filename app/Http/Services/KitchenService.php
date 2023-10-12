@@ -24,7 +24,8 @@ class KitchenService extends BaseController
                     $query->select('id','name','username');
                 }
                 ])
-            ->paginate($request['row_count']);
+                ->orderBy('name','asc')
+                ->paginate($request['row_count']);
         return $this->sendResponse('Kitchen Index Success', $data);
     }
 
@@ -100,6 +101,7 @@ class KitchenService extends BaseController
                                 $query->select('id', 'name', 'username');
                             }
                         ])
+                        ->orderBy('name','asc')
                         ->paginate($rowCount);
         return $this->sendResponse('Kitchen Search Success',$data);
     }

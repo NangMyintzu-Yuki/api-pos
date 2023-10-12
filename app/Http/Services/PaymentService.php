@@ -117,7 +117,7 @@ class PaymentService extends BaseController
                     'cash_collector' => function ($q) {
                         $q->select('id', 'name', 'username');
                     }
-                ])->paginate($rowCount);
+                ])->orderBy('name','asc')->paginate($rowCount);
         } else if ($request['branch_id']) {
             $data = Payment::where('sale_id', $saleId)
                 ->where('payment_type_id', $paymentTypeId)
@@ -137,6 +137,7 @@ class PaymentService extends BaseController
                         $q->select('id', 'name', 'username');
                     }
                 ])
+                ->orderBy('name','asc')
                 ->paginate($rowCount);
         } else {
             $data = Payment::where('sale_id', $saleId)
@@ -156,6 +157,7 @@ class PaymentService extends BaseController
                         $q->select('id', 'name', 'username');
                     }
                 ])
+                ->orderBy('name','asc')
                 ->paginate($rowCount);
         }
         return $this->sendResponse('Payment Search Success', $data);

@@ -35,7 +35,8 @@ class SaleService extends BaseController
             'sale_detail' => with(['product' => function ($q) {
                 $q->select('id', 'name');
             }])
-        ])
+            ])
+            ->orderBy('voucher_no','desc')
             ->paginate($request['row_count']);
         return $this->sendResponse('Sale Index Success', $data);
     }
@@ -226,7 +227,7 @@ class SaleService extends BaseController
                 ]),
 
 
-            ])->paginate($rowCount);
+            ])->orderBy('voucher_no','desc')->paginate($rowCount);
         } else if ($request['branch_id']) {
             $data = $this->sale->where('voucher_no', 'like', "%$keyword%")
                 ->where('user_id', $userId)
@@ -246,6 +247,7 @@ class SaleService extends BaseController
                         $q->select('id', 'name');
                     }])
                 ])
+                ->orderBy('voucher_no','desc')
                 ->paginate($rowCount);
         } else {
             $data = $this->sale->where('voucher_no', 'like', "%$keyword%")
@@ -265,6 +267,7 @@ class SaleService extends BaseController
                     },
                 ]),
                 ])
+                ->orderBy('voucher_no','desc')
                 ->paginate($rowCount);
         }
         return $this->sendResponse('Sale Search Success', $data);

@@ -21,7 +21,7 @@ class UserService extends BaseController
 
     public function index($request)
     {
-        $data = $this->getAll('users',$request['row_count']);
+        $data = $this->getAll('users',$request['row_count'],'name','asc');
         return $this->sendResponse('User Index Success',$data);
 
     }
@@ -89,6 +89,7 @@ class UserService extends BaseController
                 ->orwhere('username','like',"%$keyword%")
                 ->orwhere('phone_no','like', "%$keyword%")
                 ->orwhere('email','like',"%$keyword%")
+                ->orderBy('name','asc')
                 ->paginate();
         }else{
 
@@ -96,6 +97,7 @@ class UserService extends BaseController
                     ->orwhere('username','like',"%$keyword%")
                     ->orwhere('phone_no','like', "%$keyword%")
                     ->orwhere('email','like',"%$keyword%")
+                    ->orderBy('name','asc')
                     ->paginate($rowCount);
         }
         return $this->sendResponse('User Search Success',$data);

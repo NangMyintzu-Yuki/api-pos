@@ -80,7 +80,7 @@ class PaymentTypeService extends BaseController
         $keyword = $request['keyword'];
         $rowCount = $request['row_count'];
         $rowCount = !$rowCount ? null : $rowCount;
-        $data = PaymentType::where('name', 'like', "%$keyword%")->paginate($rowCount);
+        $data = PaymentType::where('name', 'like', "%$keyword%")->orderBy('name','asc')->paginate($rowCount);
         return $this->sendResponse('Payment Type Search Success', $data);
     }
 }
