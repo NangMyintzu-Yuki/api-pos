@@ -3,8 +3,10 @@
 namespace App\Http\Services;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Dashboard;
 use App\Models\Payment;
 use App\Models\Sale;
+use App\Models\SaleDetail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -14,6 +16,8 @@ class SaleService extends BaseController
     public function __construct(
         private Sale $sale,
         private Payment $payment,
+        private Dashboard $dashboard,
+        private SaleDetail $saleDetail,
     ) {
     }
 
@@ -35,8 +39,8 @@ class SaleService extends BaseController
             'sale_detail' => with(['product' => function ($q) {
                 $q->select('id', 'name');
             }])
-            ])
-            ->orderBy('voucher_no','desc')
+        ])
+            ->orderBy('voucher_no', 'desc')
             ->paginate($request['row_count']);
         return $this->sendResponse('Sale Index Success', $data);
     }
@@ -57,10 +61,28 @@ class SaleService extends BaseController
             $sale['voucher_no'] = $request['voucher_no'];
             $sale['table_id'] = $request['table_id'];
             $sale['total_amount'] = $request['total_amount'];
-            // $sale['user_id'] = $request['user_id'];
+            if (isset($request['user_id'])) {
+                $sale['user_id'] = $request['user_id'];
+            }
             // $sale['user_qty'] = $request['user_qty'];
             Log::info("sale", $sale);
             $id = $this->insertGetId($sale, 'sales');
+
+            if (isset($request['user_id'])) {
+                $hasUser = $this->dashboard->where('branch_id', $request['branch_id'])->where('user_id', $request['user_id'])->whereNull('deleted_at')->first();
+                if ($hasUser) {
+                    $newData['count'] = $hasUser->count + 1;
+                    $newData['amount'] = $hasUser->total_amount + $request['total_amount'];
+                    $newData['updated_at'] = Carbon::now();
+                    $this->dashboard->where('id', $hasUser->id)->update($newData);
+                } else {
+                    $newData['branch_id'] = $request['branch_id'];
+                    $newData['user_id'] = $request['user_id'];
+                    $newData['amount'] =  $request['total_amount'];
+                    $newData['count'] = 1;
+                    $this->insertData($newData, 'dashboards');
+                }
+            }
 
             // info("id=>", $id);
             if (isset($request['orderDetail'])) {
@@ -74,6 +96,18 @@ class SaleService extends BaseController
                         $saleDetail['status'] = $request['status'];
                         Log::info($saleDetail);
                         $this->insertData($saleDetail, 'sale_details');
+
+                        $hasProduct = $this->dashboard->where('product_id', $detail['id'])->whereNull('deleted_at')->first();
+                        if ($hasProduct) {
+                            $newData['count'] = $hasProduct['count'] + $detail['quantity'];
+                            $newData['updated_at'] = Carbon::now();
+                            $this->dashboard->where('id', $hasProduct->id)->update($newData);
+                        } else {
+                            $newData['branch_id'] = $request['branch_id'];
+                            $newData['product_id'] = $detail['id'];
+                            $newData['count'] = $detail['quantity'];
+                            $this->insertData($newData, 'dashboards');
+                        }
                     }
                 }
             }
@@ -130,6 +164,14 @@ class SaleService extends BaseController
         try {
             $this->beginTransaction();
 
+            $saleData = $this->sale->where('id', $request['id'])->whereNull('deleted_at')->first();
+            $hasUser = $this->dashboard->where('product_id', $saleData['user_id'])->whereNull('deleted_at')->first();
+            if ($hasUser) {
+                $newData['count'] = $hasUser['count'] - 1;
+                $newData['updated_at'] = Carbon::now();
+                $newData['amount'] = $hasUser->total_amount - $saleData['total_amount'];
+                $this->dashboard->where('id', $hasUser->id)->update($newData);
+            }
 
             $sale['id'] = $request['id'];
             $sale['date'] = $request['date'];
@@ -137,8 +179,29 @@ class SaleService extends BaseController
             $sale['voucher_no'] = $request['voucher_no'];
             $sale['table_id'] = $request['table_id'];
             $sale['total_amount'] = $request['total_amount'];
+            if (isset($request['user_id'])) {
+                $sale['user_id'] = $request['user_id'];
+            }
 
             $this->updateData($sale, 'sales');
+            $newData['count'] = $hasUser['count'] - 1;
+            $newData['updated_at'] = Carbon::now();
+            $newData['amount'] = $hasUser->total_amount + $request['total_amount'];
+            $this->dashboard->where('id', $hasUser->id)->update($newData);
+
+
+
+            $saleDetails = $this->saleDetail->where('sale_id', $request['id'])->whereNull('deleted_at')->get();
+            if (count($saleDetails) > 0) {
+                foreach ($saleDetails as $detail) {
+                    $hasProduct = $this->dashboard->where('product_id', $detail['product_id'])->whereNull('deleted_at')->first();
+                    if ($hasProduct) {
+                        $newData['count'] = $hasProduct['count'] - $detail['quantity'];
+                        $newData['updated_at'] = Carbon::now();
+                        $this->dashboard->where('id', $hasProduct->id)->update($newData);
+                    }
+                }
+            }
             DB::table('sale_details')->where('sale_id', $request['id'])->delete();
 
 
@@ -147,7 +210,7 @@ class SaleService extends BaseController
                 if (count($request['orderDetail']) > 0) {
                     foreach ($request['orderDetail'] as $detail) {
                         info($request['orderDetail']);
-                        if($detail != false){
+                        if ($detail != false) {
                             $saleDetail['sale_id'] = $request['id'];
                             $saleDetail['product_id'] = $detail['id'];
                             $saleDetail['price'] = $detail['price'];
@@ -155,6 +218,18 @@ class SaleService extends BaseController
                             $saleDetail['amount'] = $detail['price'] * $detail['quantity'];
                             $saleDetail['status'] = $request['status'];
                             $this->insertData($saleDetail, 'sale_details');
+
+                            $hasProduct = $this->dashboard->where('product_id', $detail['id'])->whereNull('deleted_at')->first();
+                            if ($hasProduct) {
+                                $newData['count'] = $hasProduct['count'] + $detail['quantity'];
+                                $newData['updated_at'] = Carbon::now();
+                                $this->dashboard->where('id', $hasProduct->id)->update($newData);
+                            } else {
+                                $newData['branch_id'] = $request['branch_id'];
+                                $newData['product_id'] = $detail['id'];
+                                $newData['count'] = $detail['quantity'];
+                                $this->insertData($newData, 'dashboards');
+                            }
                         }
                     }
                 }
@@ -181,7 +256,28 @@ class SaleService extends BaseController
             if (!$id) {
                 return $this->sendError("No Record to Delete");
             }
+            $sale = $this->sale->where('id', $request['id'])->whereNull('deleted_at')->first();
+            if ($sale) {
+                $hasUser = $this->dashboard->where('product_id', $sale['user_id'])->whereNull('deleted_at')->first();
+                if ($hasUser) {
+                    $newData['count'] = $hasUser['count'] - 1;
+                    $newData['updated_at'] = Carbon::now();
+                    $newData['amount'] = $hasUser->total_amount + $request['total_amount'];
+                    $this->dashboard->where('id', $hasUser->id)->update($newData);
+                }
+            }
 
+            $saleDetails = $this->saleDetail->where('sale_id', $request['id'])->whereNull('deleted_at')->get();
+            if (count($saleDetails) > 0) {
+                foreach ($saleDetails as $detail) {
+                    $hasProduct = $this->dashboard->where('product_id', $detail['product_id'])->whereNull('deleted_at')->first();
+                    if ($hasProduct) {
+                        $newData['count'] = $hasProduct['count'] - $detail['quantity'];
+                        $newData['updated_at'] = Carbon::now();
+                        $this->dashboard->where('id', $hasProduct->id)->update($newData);
+                    }
+                }
+            }
             $this->deletedByAttr('sale_id', $request['id'], 'sale_details');
 
             $payment = $this->payment->where('sale_id', $request['id'])->first();
@@ -227,7 +323,7 @@ class SaleService extends BaseController
                 ]),
 
 
-            ])->orderBy('voucher_no','desc')->paginate($rowCount);
+            ])->orderBy('voucher_no', 'desc')->paginate($rowCount);
         } else if ($request['branch_id']) {
             $data = $this->sale->where('voucher_no', 'like', "%$keyword%")
                 ->where('user_id', $userId)
@@ -247,7 +343,7 @@ class SaleService extends BaseController
                         $q->select('id', 'name');
                     }])
                 ])
-                ->orderBy('voucher_no','desc')
+                ->orderBy('voucher_no', 'desc')
                 ->paginate($rowCount);
         } else {
             $data = $this->sale->where('voucher_no', 'like', "%$keyword%")
@@ -261,13 +357,13 @@ class SaleService extends BaseController
                     'table' => function ($q) {
                         $q->select("id", "table_no");
                     },
-                'sale_detail' => with([
-                    'product' => function ($q) {
-                        $q->select('id', 'name');
-                    },
-                ]),
+                    'sale_detail' => with([
+                        'product' => function ($q) {
+                            $q->select('id', 'name');
+                        },
+                    ]),
                 ])
-                ->orderBy('voucher_no','desc')
+                ->orderBy('voucher_no', 'desc')
                 ->paginate($rowCount);
         }
         return $this->sendResponse('Sale Search Success', $data);

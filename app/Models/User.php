@@ -70,4 +70,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(AddToCart::class);
     }
+    public function dashboard()
+    {
+        return $this->hasMany(Dashboard::class);
+    }
 }
