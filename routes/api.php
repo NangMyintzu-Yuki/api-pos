@@ -6,7 +6,9 @@ use App\Http\Controllers\AuthOperatorController;
 use App\Http\Controllers\AuthUserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\LocationController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SaleDetailController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\TownshipController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +49,10 @@ Route::post('operator/login', [AuthOperatorController::class, 'login']);
 Route::post('user/register', [AuthUserController::class, 'register']);
 Route::post('user/login', [AuthUserController::class, 'login']);
 Route::post('dashboard',[DashboardController::class,'index']);
+
+Route::post('web/product', [ProductController::class, 'index']);
+Route::post('web/category', [CategoryController::class, 'index']);
+Route::post('web/product/filter', [ProductController::class, 'filter']);
 Route::post('getUserLocation',[LocationController::class,'index']);
 Route::post('storeUserLocation',[LocationController::class,'store']);
 
@@ -251,6 +258,7 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
         Route::post('/change_status', [PaymentController::class, 'change_status']);
         Route::post('/make_invoice', [PaymentController::class, 'make_invoice']);
     });
+
     ///////////////////////////////////////// Sale
 
     Route::prefix('ingredient')->group(function () {
@@ -260,6 +268,39 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
         Route::post('/update', [IngredientController::class, 'update']);
         Route::post('/delete', [IngredientController::class, 'delete']);
         Route::post('/filter', [IngredientController::class, 'filter']);
+    });
+
+    ///////////////////////////////////////// Table
+
+    Route::prefix('division')->group(function () {
+        Route::post('/', [DivisionController::class, 'index']);
+        Route::post('/store', [DivisionController::class, 'store']);
+        Route::post('/edit', [DivisionController::class, 'edit']);
+        Route::post('/update', [DivisionController::class, 'update']);
+        Route::post('/delete', [DivisionController::class, 'delete']);
+        Route::post('/filter', [DivisionController::class, 'filter']);
+    });
+
+    ///////////////////////////////////////// City
+
+    Route::prefix('city')->group(function () {
+        Route::post('/', [CityController::class, 'index']);
+        Route::post('/store', [CityController::class, 'store']);
+        Route::post('/edit', [CityController::class, 'edit']);
+        Route::post('/update', [CityController::class, 'update']);
+        Route::post('/delete', [CityController::class, 'delete']);
+        Route::post('/filter', [CityController::class, 'filter']);
+    });
+
+    ///////////////////////////////////////// Township
+
+    Route::prefix('township')->group(function () {
+        Route::post('/', [TownshipController::class, 'index']);
+        Route::post('/store', [TownshipController::class, 'store']);
+        Route::post('/edit', [TownshipController::class, 'edit']);
+        Route::post('/update', [TownshipController::class, 'update']);
+        Route::post('/delete', [TownshipController::class, 'delete']);
+        Route::post('/filter', [TownshipController::class, 'filter']);
     });
 
 

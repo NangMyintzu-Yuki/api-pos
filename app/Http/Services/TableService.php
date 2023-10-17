@@ -79,7 +79,7 @@ class TableService extends BaseController
             }
             $sale = $this->sale->where('table_id',$request['id'])->first();
             if($sale){
-                return $this->sendError("This Table has already used. Can't delete!!");
+                return $this->sendError("This Table is already used. Can't delete!!");
             }
             $this->deleteById($request['id'], 'tables');
             $this->commit();

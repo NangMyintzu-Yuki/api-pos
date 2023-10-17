@@ -79,7 +79,7 @@ class BranchService extends BaseController{
             $table = $this->table->where('branch_id',$request['id'])->first();
             $payment = $this->payment->where('branch_id',$request['id'])->first();
             if($product || $category || $operator || $kitchen || $table || $payment){
-                return $this->sendError("This Branch has already used. Can't delete!!");
+                return $this->sendError("This Branch is already used. Can't delete!!");
             }
             $this->deleteById($request['id'],'branches');
             $this->commit();

@@ -62,7 +62,7 @@ class PaymentTypeService extends BaseController
 
             $payment = $this->payment->where('payment_type_id', $request['id'])->first();
             if ($payment) {
-                return $this->sendError("This Payment Type has already used. Can't delete!!");
+                return $this->sendError("This Payment Type is already used. Can't delete!!");
             }
             $this->deleteById($request['id'], 'payment_types');
             $this->commit();

@@ -127,7 +127,7 @@ class OperatorService extends BaseController
             $user = $this->user->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
 
             if ($branch || $category || $ingredient || $payment || $paymentType || $table || $product || $sale || $kitchen || $user) {
-                return $this->sendError("This Operator has already used. Can't delete!!");
+                return $this->sendError("This Operator is already used. Can't delete!!");
             }
 
             $this->deleteById($request['id'], 'operators');

@@ -72,7 +72,7 @@ class IngredientService extends BaseController
             }
             $product = $this->productIngredient->where('ingredient_id', $request['id'])->first();
             if($product){
-                return $this->sendError("This Ingredient has already used. Can't delete!!");
+                return $this->sendError("This Ingredient is already used. Can't delete!!");
             }
             $this->deleteById($request['id'], 'ingredients');
             $this->commit();

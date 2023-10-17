@@ -282,7 +282,7 @@ class SaleService extends BaseController
 
             $payment = $this->payment->where('sale_id', $request['id'])->first();
             if ($payment) {
-                return $this->sendError("This Payment has already used. Can't delete!!");
+                return $this->sendError("This Payment is already used. Can't delete!!");
             }
             $this->deleteById($request['id'], 'sales');
             $this->commit();

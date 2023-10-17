@@ -118,7 +118,7 @@ class CategoryService extends BaseController{
             $category  = $this->category->where('parent_id',$request['id'])->first();
 
             if ($product || $category) {
-                return $this->sendError("This Category has already used. Can't delete!!");
+                return $this->sendError("This Category is already used. Can't delete!!");
             }
             $this->deleteById($request['id'], 'categories');
             $this->commit();

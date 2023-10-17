@@ -166,7 +166,7 @@ class ProductService extends BaseController
 
             $saleDetail = $this->saleDetail->where('product_id', $request['id'])->first();
             if ($saleDetail) {
-                return $this->sendError("This Product has already used. Can't delete!!");
+                return $this->sendError("This Product is already used. Can't delete!!");
             }
             $this->deleteById($request['id'], 'products');
 
