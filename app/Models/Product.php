@@ -55,4 +55,8 @@ class Product extends Model
     {
         return $this->belongsToMany(Ingredient::class, 'product_ingredients');
     }
+    public function dashboard()
+    {
+        return $this->hasMany(Dashboard::class);
+    }
 }

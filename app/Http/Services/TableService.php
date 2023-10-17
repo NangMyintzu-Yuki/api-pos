@@ -26,6 +26,7 @@ class TableService extends BaseController
                     'branch' => function($query){
                         $query->select('id','name');
                     }])
+                    ->orderBy('table_no','asc')
                     ->paginate($request['row_count']);
         return $this->sendResponse('Table Index Success', $data);
     }
@@ -126,6 +127,7 @@ class TableService extends BaseController
                                     $query->select('id', 'name');
                                 }
                             ])
+                            ->orderBy('table_no','asc')
                             ->paginate($rowCount);
         }else{
             $data = Table::where('table_no', 'like', "%$keyword%")
@@ -134,6 +136,7 @@ class TableService extends BaseController
                                     $query->select('id', 'name');
                                 }
                             ])
+                            ->orderBy('table_no','asc')
                             ->paginate($rowCount);
         }
         return $this->sendResponse('Table Search Success', $data);

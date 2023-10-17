@@ -45,12 +45,13 @@ class OperatorService extends BaseController
         // $data = OperatorResource::collection($data->items())->response()->getData(true);
 
         $data = Operator::with(['branch' => function ($q) {
-            $q->select('id', 'name');
-        },
-        "role" => function($q){
-            $q->select('id','name');
-        }
-        ])
+                $q->select('id', 'name');
+            },
+            "role" => function($q){
+                $q->select('id','name');
+            }
+            ])
+            ->orderBy('name','asc')
             ->paginate($request['row_count']);
         return $this->sendResponse('Operator Index Success', $data);
     }
@@ -157,6 +158,7 @@ class OperatorService extends BaseController
                 "role" => function ($q) {
                     $q->select('id', 'name');
                 }])
+                ->orderBy('name','asc')
                 ->paginate();
         } else {
             $data = Operator::with('branch')
@@ -168,6 +170,7 @@ class OperatorService extends BaseController
                 "role" => function ($q) {
                     $q->select('id', 'name');
                 }])
+                ->orderBy('name','asc')
                 ->paginate($rowCount);
         }
         return $this->sendResponse('Operator Search Success', $data);

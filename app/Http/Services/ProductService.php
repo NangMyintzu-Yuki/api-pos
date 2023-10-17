@@ -32,7 +32,9 @@ class ProductService extends BaseController
             },
             'product_image', "ingredients"
 
-        ])->paginate($request['row_count']);
+            ])
+            ->orderBy('name','asc')
+            ->paginate($request['row_count']);
         return $this->sendResponse('Product Index Success', $data);
     }
 
@@ -196,6 +198,7 @@ class ProductService extends BaseController
                     },
                     'product_image', "ingredients"
                 ])
+                ->orderBy('name','asc')
                 ->paginate($rowCount);
         }else if($request['keyword']){
             $data = Product::where('name', 'like', "%$keyword%")
@@ -208,6 +211,7 @@ class ProductService extends BaseController
                     },
                     'product_image', "ingredients"
                 ])
+                ->orderBy('name','asc')
                 ->paginate($rowCount);
         }else if($request['category_id']){
             $data = Product::where('category_id', $category)
@@ -220,6 +224,7 @@ class ProductService extends BaseController
                     },
                     'product_image', "ingredients"
                 ])
+                ->orderBy('name','asc')
                 ->paginate($rowCount);
         }else{
             $data = Product::where('name', 'like', "%$keyword%")
@@ -233,6 +238,7 @@ class ProductService extends BaseController
                     },
                     'product_image', "ingredients"
                 ])
+                ->orderBy('name','asc')
                 ->paginate($rowCount);
         }
         return $this->sendResponse('Product Search Success', $data);

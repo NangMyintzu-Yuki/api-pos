@@ -6,8 +6,10 @@ use App\Http\Controllers\AuthOperatorController;
 use App\Http\Controllers\AuthUserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\KitchenController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentTypeController;
@@ -43,6 +45,9 @@ Route::post('operator/register', [AuthOperatorController::class, 'register']);
 Route::post('operator/login', [AuthOperatorController::class, 'login']);
 Route::post('user/register', [AuthUserController::class, 'register']);
 Route::post('user/login', [AuthUserController::class, 'login']);
+Route::post('dashboard',[DashboardController::class,'index']);
+Route::post('getUserLocation',[LocationController::class,'index']);
+Route::post('storeUserLocation',[LocationController::class,'store']);
 
 
 

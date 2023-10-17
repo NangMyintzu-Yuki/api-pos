@@ -28,7 +28,7 @@ class CategoryService extends BaseController{
         "parent" => function($query){
             $query->select('id','name');
         }
-        ])->paginate($request['row_count']);
+        ])->orderBy('name','asc')->paginate($request['row_count']);
         return $this->sendResponse('Caregory Index Success', $data);
     }
 
@@ -115,8 +115,9 @@ class CategoryService extends BaseController{
                 File::delete($path);
             }
             $product  = $this->product->where('category_id',$request['id'])->first();
+            $category  = $this->category->where('parent_id',$request['id'])->first();
 
-            if ($product) {
+            if ($product || $category) {
                 return $this->sendError("This Category has already used. Can't delete!!");
             }
             $this->deleteById($request['id'], 'categories');
@@ -144,6 +145,7 @@ class CategoryService extends BaseController{
                 $query->select('id', 'name');
             }
             ])
+            ->orderBy('name','asc')
             ->paginate($rowCount);
         return $this->sendResponse('Category Search Success', $data);
     }

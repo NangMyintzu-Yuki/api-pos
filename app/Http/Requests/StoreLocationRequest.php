@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBranchRequest extends FormRequest
+class StoreLocationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,9 @@ class StoreBranchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name"=>"required|unique:branches,name",
-            "status"=>""
+            "latitude"=>"required",
+            "longitude"=>"required",
+            "user_id"=>""
         ];
     }
 }

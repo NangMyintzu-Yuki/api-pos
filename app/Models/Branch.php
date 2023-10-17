@@ -48,5 +48,9 @@ class Branch extends Model
     {
         return $this->hasMany(Payment::class);
     }
+    public function dashboard()
+    {
+        return $this->hasMany(Dashboard::class);
+    }
 
 }

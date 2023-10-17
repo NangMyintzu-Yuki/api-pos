@@ -45,10 +45,10 @@ class BaseController extends Controller
     ////////////////////////////////////////////////////////////////////
 
 
-    public function getAll($model,$rowCount)
+    public function getAll($model,$rowCount,$sortingName = 'name', $sortingType = 'asc')
     {
         $rowCount = !$rowCount ? 20 : $rowCount;
-        $data = DB::table($model)->whereNull('deleted_at')->paginate($rowCount);
+        $data = DB::table($model)->whereNull('deleted_at')->orderBy($sortingName,$sortingType)->paginate($rowCount);
         // return $data->items();
         return $data;
     }
