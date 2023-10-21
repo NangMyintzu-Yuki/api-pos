@@ -16,6 +16,8 @@ use App\Models\Sale;
 use App\Models\Table;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 class OperatorService extends BaseController
@@ -64,7 +66,18 @@ class OperatorService extends BaseController
     {
         $request['password'] = Hash::make($request['password']);
         $request['created_at'] = Carbon::now();
+        $id =DB::table('operators')->insertGetId($request);
+
         $this->insertData($request, 'operators');
+        if (isset($request['profile'])) {
+            $image = $request['profile'];
+            $destinationpath = 'images/operators/' . $id;
+            $operatorProfile = date('YmdHis') . '.' . $image->getClientOriginalExtension();
+            $image->move($destinationpath, $operatorProfile);
+            $updateData['profile'] = "$operatorProfile";
+            $updateData['id'] = $id;
+            $this->updateData($updateData,'operators');
+        }
         return $this->sendResponse('Operator Create Success');
     }
 
@@ -98,8 +111,33 @@ class OperatorService extends BaseController
 
     public function update(array $request)
     {
-        $this->updateData($request, 'operators');
-        return $this->sendResponse('Operator Update Success');
+        try {
+            $this->beginTransaction();
+            $prevImage = $this->operator->where('id', $request['id'])->whereNull('deleted_at')->value('profile');
+            if (isset($request['profile'])) {
+                if (str_contains($request['profile'], 'C:\xampp\tmp')) {
+                    if ($request['profile'] != '') {
+                        $path = 'images/operators/' . $request['id'];
+                        // if (File::exists($path)) {
+                        //     File::delete($path);
+                        // }
+                        File::deleteDirectory(public_path($path));
+                    }
+                    $image = $request['profile'];
+                    $destinationpath = 'images/operators/' . $request['id'];
+                    $operatorProfile = date('YmdHis') . '.' . $image->getClientOriginalExtension();
+                    $image->move($destinationpath, $operatorProfile);
+                    $request['profile'] = "$operatorProfile";
+                }
+
+            }
+            $this->updateData($request, 'operators');
+            $this->commit();
+            return $this->sendResponse('Operator Update Success');
+        } catch (\Exception $e) {
+            $this->rollback();
+            throw new \Exception($e);
+        }
     }
 
 
@@ -114,6 +152,14 @@ class OperatorService extends BaseController
             if (!$id) {
                 return $this->sendError("No Record to Delete");
             }
+            // $prevImage = $this->operator->where('id', $request['id'])->whereNull('deleted_at')->first();
+            // $path = 'images/operators/' . $prevImage['profile'];
+            // if (File::exists($path)) {
+            //     File::delete($path);
+            // }
+
+            $multiImagePath = "images/operators/" . $request['id'];
+            File::deleteDirectory(public_path($multiImagePath));
 
             $branch = $this->branch->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();
             $category = $this->category->where('created_by', $request['id'])->where('updated_by', $request['id'])->where('deleted_by', $request['id'])->first();

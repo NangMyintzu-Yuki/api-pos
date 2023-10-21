@@ -32,8 +32,8 @@ class ProductService extends BaseController
             },
             'product_image', "ingredients"
 
-            ])
-            ->orderBy('name','asc')
+        ])
+            ->orderBy('name', 'asc')
             ->paginate($request['row_count']);
         return $this->sendResponse('Product Index Success', $data);
     }
@@ -54,10 +54,10 @@ class ProductService extends BaseController
             // }
 
 
-            info($request);
             $product['branch_id'] = $request['branch_id'];
             $product['category_id'] = $request['category_id'];
             $product['name'] = $request['name'];
+            $product['description'] = $request['description'];
             $product['price'] = $request['price'];
             $product['today_menu'] = $request['today_menu'];
             $product['special_menu'] = $request['special_menu'];
@@ -125,6 +125,7 @@ class ProductService extends BaseController
             $product['branch_id'] = $request['branch_id'];
             $product['category_id'] = $request['category_id'];
             $product['name'] = $request['name'];
+            $product['description'] = $request['description'];
             $product['price'] = $request['price'];
             $product['today_menu'] = $request['today_menu'];
             $product['special_menu'] = $request['special_menu'];
@@ -186,7 +187,7 @@ class ProductService extends BaseController
         $category = $request['category_id'];
         $rowCount = $request['row_count'];
         $rowCount = !$rowCount ? null : $rowCount;
-        if(isset($request['keyword']) && isset($request['category_id'])){
+        if (isset($request['keyword']) && isset($request['category_id'])) {
             $data = Product::where('name', 'like', "%$keyword%")
                 ->where('category_id', $category)
                 ->with([
@@ -198,9 +199,9 @@ class ProductService extends BaseController
                     },
                     'product_image', "ingredients"
                 ])
-                ->orderBy('name','asc')
+                ->orderBy('name', 'asc')
                 ->paginate($rowCount);
-        }else if($request['keyword']){
+        } else if ($request['keyword']) {
             $data = Product::where('name', 'like', "%$keyword%")
                 ->with([
                     'branch' => function ($query) {
@@ -211,9 +212,9 @@ class ProductService extends BaseController
                     },
                     'product_image', "ingredients"
                 ])
-                ->orderBy('name','asc')
+                ->orderBy('name', 'asc')
                 ->paginate($rowCount);
-        }else if($request['category_id']){
+        } else if ($request['category_id']) {
             $data = Product::where('category_id', $category)
                 ->with([
                     'branch' => function ($query) {
@@ -224,9 +225,9 @@ class ProductService extends BaseController
                     },
                     'product_image', "ingredients"
                 ])
-                ->orderBy('name','asc')
+                ->orderBy('name', 'asc')
                 ->paginate($rowCount);
-        }else{
+        } else {
             $data = Product::where('name', 'like', "%$keyword%")
                 ->orWhere('category_id', $category)
                 ->with([
@@ -238,7 +239,7 @@ class ProductService extends BaseController
                     },
                     'product_image', "ingredients"
                 ])
-                ->orderBy('name','asc')
+                ->orderBy('name', 'asc')
                 ->paginate($rowCount);
         }
         return $this->sendResponse('Product Search Success', $data);
@@ -248,9 +249,35 @@ class ProductService extends BaseController
     {
         $images = [];
         $destinationPath = 'images/products/' . $id;
+        if (isset($request['today'])) {
+            $image = $request['today'];
+            $todayImageName = date('YmdHis') . '_today.'  . 'png';
+            $image->move($destinationPath, $todayImageName);
+            // $tmpImgs[] = "$todayImageName";
+            $productImage['product_id'] = $id;
+            $productImage['category_id'] = $request['category_id'];
+            $productImage['branch_id'] = $request['branch_id'];
+            $productImage['images'] = "$todayImageName";
+            $productImage['today_menu'] = 1;
+
+            $this->insertData($productImage, 'product_images');
+        }
+        if (isset($request['special'])) {
+            $image = $request['special'];
+            $specialImageName = date('YmdHis') . '_special.'  . 'png';
+            $image->move($destinationPath, $specialImageName);
+            $specialProduct['product_id'] = $id;
+            $specialProduct['category_id'] = $request['category_id'];
+            $specialProduct['branch_id'] = $request['branch_id'];
+            $specialProduct['images'] = "$specialImageName";
+            $specialProduct['special_menu'] = 1;
+
+            $this->insertData($specialProduct, 'product_images');
+        }
+
         if (count($request['image']) > 0) {
             foreach ($request['image'] as $key => $image) {
-                $productImage = date('YmdHis') . '_' . random_int(1, 99) . "."  . $image->getClientOriginalExtension();
+                $productImage = date('YmdHis') . '_' . random_int(1, 99) . "."  . 'png';
                 $image->move($destinationPath, $productImage);
                 $images[] =  [
                     "image" => $productImage
@@ -259,13 +286,13 @@ class ProductService extends BaseController
         }
 
         // Product Images
-        foreach ($images as $key => $image) {
-            $porductImage['product_id'] = $id;
-            $porductImage['category_id'] = $request['category_id'];
-            $porductImage['branch_id'] = $request['branch_id'];
-            $porductImage['images'] = $image['image'];
+        foreach ($images as $image) {
+            $product['product_id'] = $id;
+            $product['category_id'] = $request['category_id'];
+            $product['branch_id'] = $request['branch_id'];
+            $product['images'] = $image['image'];
 
-            $this->insertData($porductImage, 'product_images');
+            $this->insertData($product, 'product_images');
         }
     }
     public function insertProductIngredientData($request, $id)

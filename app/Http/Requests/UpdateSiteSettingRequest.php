@@ -11,7 +11,7 @@ class UpdateSiteSettingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class UpdateSiteSettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "id"=>"",
+            "tax"=>"required",
+            "service_charge"=>"required",
+            "dashboard_theme"=>"required",
+            "website_theme"=>"required",
         ];
     }
 }

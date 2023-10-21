@@ -16,12 +16,15 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('username')->nullable();
             $table->string('email')->nullable();
-            $table->string('township')->nullable();
+            $table->unsignedInteger('division_id')->nullable();
+            $table->unsignedInteger('city_id')->nullable();
+            $table->unsignedInteger('township_id')->nullable();
             $table->string('password')->nullable();
             $table->longText('address')->nullable();
             $table->unsignedInteger('user_type')->nullable()->default(1);
             $table->string('phone_no')->nullable();
             $table->unsignedInteger('point')->nullable()->default(0);
+            $table->string('profile')->nullable();
             $table->unsignedInteger('status')->nullable()->default(1);
             $table->unsignedInteger('created_by')->nullable();
             $table->unsignedInteger('updated_by')->nullable();

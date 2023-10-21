@@ -22,11 +22,12 @@ class StoreOperatorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required",
+            "name" => "required|unique:operators,name",
             "username" => "",
-            "role" => "required",
+            "role_id" => "required",
             "password" => "required",
             "branch_id" => "required",
+            "profile" => "",
             "status" => "",
         ];
     }

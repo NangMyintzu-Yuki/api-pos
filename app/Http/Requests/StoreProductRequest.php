@@ -31,6 +31,8 @@ class StoreProductRequest extends FormRequest
             "ingredient_id"=>"",
             "today_menu"=>"",
             "special_menu"=>"",
+            "today"=>"",
+            "special"=>"",
             "description"=>"required",
             "status"=>"",
         ];

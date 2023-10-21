@@ -20,6 +20,7 @@ class OperatorResource extends JsonResource
             'username' => $this->username,
             'status' => $this->status,
             'role' => $this->role,
+            'profile' => $this->profile,
             'branch_id' => $this->branch()->first(),
             // 'role' => new RoleResource($this->role()->first()),
             'created_by' => $this->created_by,

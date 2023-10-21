@@ -22,11 +22,14 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
-        'township',
+        'division_id',
+        'city_id',
+        'township_id',
         'address',
         'password',
         'user_type',
         'phone_no',
+        "profile",
         'point',
         'status',
         'created_by',
@@ -77,5 +80,17 @@ class User extends Authenticatable
     public function location()
     {
         return $this->hasMany(Location::class);
+    }
+    public function township()
+    {
+        return $this->belongsTo(Township::class);
+    }
+    public function division()
+    {
+        return $this->belongsTo(Division::class);
+    }
+    public function city()
+    {
+        return $this->belongsTo(City::class);
     }
 }

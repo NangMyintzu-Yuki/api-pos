@@ -32,6 +32,8 @@ class UpdateProductRequest extends FormRequest
             "today_menu"=>"",
             "special_menu"=>"",
             "description"=>"",
+            "today" => "",
+            "special" => "",
             "status" => "",
         ];
     }

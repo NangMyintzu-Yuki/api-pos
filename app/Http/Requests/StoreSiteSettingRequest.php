@@ -11,7 +11,7 @@ class StoreSiteSettingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class StoreSiteSettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "tax" => "required",
+            "service_charge" => "required",
+            "dashboard_theme" => "required",
+            "website_theme" => "required",
         ];
     }
 }

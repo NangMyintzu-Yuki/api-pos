@@ -23,6 +23,8 @@ class StoreProductImageRequest extends FormRequest
     {
         return [
             "images"=>"required",
+            "today_menu"=>"",
+            "special_menu"=>"",
             "product_id"=>"required",
             "category_id"=>"required",
             "branch_id"=>"required",

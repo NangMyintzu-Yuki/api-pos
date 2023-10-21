@@ -24,10 +24,15 @@ class UpdateProductImageRequest extends FormRequest
         return [
             // "id"=>"required",
             "images" => "",
+            "today_menu"=>"",
+            "special_menu"=>"",
+            "today_menu_img" => "",
+            "special_menu_img" => "",
             "product_id" => "required",
             "category_id" => "",
             "branch_id" => "",
             "status" => "",
+
         ];
     }
 }

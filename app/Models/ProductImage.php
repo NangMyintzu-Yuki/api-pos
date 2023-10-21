@@ -12,6 +12,8 @@ class ProductImage extends Model
     protected $fillable = [
         "product_id",
         "images",
+        "today_menu",
+        "special_menu",
         "branch_id",
         "category_id",
         "status",

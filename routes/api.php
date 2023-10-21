@@ -23,6 +23,7 @@ use App\Http\Controllers\SaleDetailController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\TownshipController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SiteSettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::post('operator/register', [AuthOperatorController::class, 'register']);
 Route::post('operator/login', [AuthOperatorController::class, 'login']);
 Route::post('user/register', [AuthUserController::class, 'register']);
+Route::post('user/store', [UserController::class, 'store']);
 Route::post('user/login', [AuthUserController::class, 'login']);
 Route::post('dashboard',[DashboardController::class,'index']);
 
@@ -301,6 +303,16 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
         Route::post('/update', [TownshipController::class, 'update']);
         Route::post('/delete', [TownshipController::class, 'delete']);
         Route::post('/filter', [TownshipController::class, 'filter']);
+    });
+    ///////////////////////////////////////// Site Setting
+
+    Route::prefix('siteSetting')->group(function () {
+        Route::post('/', [SiteSettingController::class, 'index']);
+        Route::post('/store', [SiteSettingController::class, 'store']);
+        Route::post('/edit', [SiteSettingController::class, 'edit']);
+        Route::post('/update', [SiteSettingController::class, 'update']);
+        Route::post('/delete', [SiteSettingController::class, 'delete']);
+        Route::post('/filter', [SiteSettingController::class, 'filter']);
     });
 
 

@@ -29,7 +29,8 @@ class UpdateOperatorRequest extends FormRequest
             'username'=>'',
             'password' => '',
             'branch_id' => '',
-            'role' => '',
+            'profile' => '',
+            'role_id' => '',
         ];
     }
 }

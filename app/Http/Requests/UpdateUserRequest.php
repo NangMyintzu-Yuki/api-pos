@@ -28,10 +28,13 @@ class UpdateUserRequest extends FormRequest
             "email" => "",
             "phone_no" => "",
             "password" => "",
-            "township" => "",
+            "division_id" => "",
+            "city_id" => "",
+            "township_id" => "",
             "address" => "",
             "user_type" => "",
             "point" => "",
+            "profile" => "",
             "status" => ""
         ];
     }

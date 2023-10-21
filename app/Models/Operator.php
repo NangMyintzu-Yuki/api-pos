@@ -16,6 +16,7 @@ class Operator extends Model
         "username",
         "password",
         "branch_id",
+        "profile",
         "status",
         "created_by",
         "updated_by",

@@ -27,10 +27,14 @@ class StoreUserRequest extends FormRequest
             "email"=>"",
             "phone_no"=>["required","unique:users,phone_no"],
             "password"=>"required",
-            "township" => "required",
+            "division_id" => "",
+            "township_id" => "",
+            "city_id" => "",
             "address" =>"required",
+            "profile"=>"",
             "user_type" =>"",
             "point"=>"",
+            "profile"=>"",
             "status"=>""
         ];
     }

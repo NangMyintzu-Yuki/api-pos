@@ -6,7 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\SiteSetting;
 use Carbon\Carbon;
 
-class SiteSettingServiceService extends BaseController
+class SiteSettingService extends BaseController
 {
     public function __construct(private SiteSetting $siteSetting)
     {
@@ -18,7 +18,7 @@ class SiteSettingServiceService extends BaseController
 
     public function index($request)
     {
-        $data = $this->getAll('site_settings',$request['row_count']);
+        $data = $this->getAll('site_settings',20);
         return $this->sendResponse('Site Setting Index Success', $data);
     }
 
