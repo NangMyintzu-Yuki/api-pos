@@ -99,6 +99,26 @@ class ProductService extends BaseController
         }
         return $this->sendResponse('Product Edit Success', $data);
     }
+    //////////////////////////////////////////////////////////////////////
+
+    public function detail($request)
+    {
+        $data = $this->product->where('id', $request['id'])
+            ->whereNull('deleted_at')
+            ->with([
+                'branch' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'category' => function ($query) {
+                    $query->select('id', 'name','image');
+                }, 'product_image', "ingredients"
+            ])
+            ->first();
+        if (!$data) {
+            return $this->sendResponse('Product Not Found');
+        }
+        return $this->sendResponse('Product Edit Success', $data);
+    }
 
     //////////////////////////////////////////////////////////////////////
 

@@ -19,4 +19,16 @@ class LocationController extends Controller
     {
         return $this->locationService->store($request->validated());
     }
+    public function getLocationWithUserId(Request $request)
+    {
+        return $this->locationService->getLocationWithUserId($request);
+    }
+    public function changeStatus(Request $request)
+    {
+        return $this->locationService->changeStatus($request);
+    }
+    public function destory(Request $request)
+    {
+        return $this->locationService->destory($request);
+    }
 }

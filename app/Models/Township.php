@@ -29,5 +29,9 @@ class Township extends Model
     {
         return $this->hasMany(User::class);
     }
+    public function location()
+    {
+        return $this->hasMany(Location::class);
+    }
 
 }

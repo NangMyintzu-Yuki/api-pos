@@ -52,5 +52,9 @@ class UserController extends Controller
     {
         return $this->userService->changeStatus($request->validated());
     }
+    public function getOrderedItems(Request $request)
+    {
+        return $this->userService->getOrderedItems($request);
+    }
 
 }

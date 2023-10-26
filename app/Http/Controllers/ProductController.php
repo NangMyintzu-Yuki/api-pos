@@ -25,6 +25,10 @@ class ProductController extends Controller
     {
         return $this->productService->edit($request);
     }
+    public function detail(Request $request)
+    {
+        return $this->productService->detail($request);
+    }
     public function update(UpdateProductRequest $request)
     {
         return $this->productService->update($request->validated());

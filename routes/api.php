@@ -55,7 +55,9 @@ Route::post('dashboard',[DashboardController::class,'index']);
 Route::post('web/product', [ProductController::class, 'index']);
 Route::post('web/category', [CategoryController::class, 'index']);
 Route::post('web/product/filter', [ProductController::class, 'filter']);
+Route::post('web/product/detail', [ProductController::class, 'detail']);
 Route::post('getUserLocation',[LocationController::class,'index']);
+Route::post('getLocationWithUserId',[LocationController::class, 'getLocationWithUserId']);
 Route::post('storeUserLocation',[LocationController::class,'store']);
 
 
@@ -108,6 +110,7 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
         Route::post('/delete', [UserController::class, 'delete']);
         Route::post('/filter', [UserController::class, 'filter']);
         Route::post('/change_status',[UserController::class,'changeStatus']);
+        Route::post('/getOrderedItems',[UserController::class, 'getOrderedItems']);
     });
 
 
@@ -314,6 +317,15 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
         Route::post('/delete', [SiteSettingController::class, 'delete']);
         Route::post('/filter', [SiteSettingController::class, 'filter']);
     });
+
+    ///////////////////////////////////////// Location
+
+    Route::prefix('location')->group(function () {
+        Route::post('/changeStatus', [LocationController::class, 'changeStatus']);
+        Route::post('/delete', [LocationController::class, 'destory']);
+    });
+
+
 
 
 });

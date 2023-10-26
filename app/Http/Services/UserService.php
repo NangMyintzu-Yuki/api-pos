@@ -5,6 +5,8 @@ namespace App\Http\Services;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\Sale;
+use App\Models\SaleDetail;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -14,7 +16,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseController
 {
-    public function __construct(private User $user)
+    public function __construct(
+        private User $user,
+        private Sale $sale,
+        private SaleDetail $saleDetail,
+        )
     {
     }
 
@@ -226,4 +232,16 @@ class UserService extends BaseController
         $this->updateData($request, 'users');
         return $this->sendResponse("User Status Update Success");
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    public function getOrderedItems($request)
+    {
+        $data = $this->sale->where('user_id', $request['user_id'])->whereNull('deleted_at')->first();
+        if (!$data) {
+            return $this->sendResponse("Data Not Found");
+        }
+        return $this->sendResponse('Data Fetch Success', $data);
+    }
+
 }

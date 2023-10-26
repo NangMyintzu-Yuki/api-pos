@@ -10,8 +10,12 @@ class Location extends Model
 {
     use HasFactory,SoftDeletes;
     protected $fillable = [
+            "title",
+            "address",
             "latitude",
             "longitude",
+            "is_default",
+            "township_id",
             "user_id",
             "created_at",
             "updated_at",
@@ -21,5 +25,9 @@ class Location extends Model
     public function user()
     {
         return $this->belongsToMany(User::class);
+    }
+    public function township()
+    {
+        return $this->belongsTo(Township::class);
     }
 }

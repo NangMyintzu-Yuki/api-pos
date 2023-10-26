@@ -5,12 +5,32 @@ namespace App\Http\Controllers;
 use App\Http\Resources\OperatorResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
+use App\Http\Controllers\Str;
 
 class BaseController extends Controller
 {
 
 
+
+    // public function handle()
+    // {
+    //     $files = Arr::where(Storage::disk('log')->files(), function ($filename) {
+    //         return Str::endsWith($$filename, '.log');
+    //     });
+
+
+    //     $count = count($files);
+
+    //     if (Storage::disk('log')->delete($files)) {
+    //         $this->info(sprintf('Deleted %s %s!', $count, Str::plural('file', $count)));
+    //     } else {
+    //         $this->error('Error in deleting log files!');
+    //     }
+    // }
     ///////////////////////////////////////////////////////////////////
 
     public function sendResponse($message, $data = null)

@@ -22,9 +22,14 @@ class StoreLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "latitude"=>"required",
-            "longitude"=>"required",
-            "user_id"=>""
+            "latitude"=>"",
+            "longitude"=>"",
+            "user_id"=>"required",
+            "township_id"=> "",
+            "title"=> "required",
+            "address"=> "required",
+            "is_default"=>""
+
         ];
     }
 }
