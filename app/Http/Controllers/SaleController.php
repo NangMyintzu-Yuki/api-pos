@@ -41,4 +41,8 @@ class SaleController extends Controller
     {
         return $this->saleService->change_status($request->validated());
     }
+    public function saleWithUserId(Request $request)
+    {
+        return $this->saleService->saleWithUserId($request);
+    }
 }

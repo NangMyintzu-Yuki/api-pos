@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLocationRequest;
+use App\Http\Requests\UpdateLocationRequest;
 use App\Http\Services\LocationService;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,14 @@ class LocationController extends Controller
     public function index(Request $request)
     {
         return $this->locationService->index($request);
+    }
+    public function edit(Request $request)
+    {
+        return $this->locationService->edit($request);
+    }
+    public function update(UpdateLocationRequest $request)
+    {
+        return $this->locationService->update($request->validated());
     }
     public function store(StoreLocationRequest $request)
     {

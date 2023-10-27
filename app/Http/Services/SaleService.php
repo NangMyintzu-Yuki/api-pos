@@ -49,7 +49,6 @@ class SaleService extends BaseController
 
     public function store(array $request)
     {
-        info($request);
         Log::info($request);
 
         try {
@@ -154,6 +153,7 @@ class SaleService extends BaseController
         }
         return $this->sendResponse('Sale Edit Success', $data);
     }
+
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -381,5 +381,38 @@ class SaleService extends BaseController
         $request['updated_at'] = Carbon::now();
         $this->updateData($request, 'sales');
         return $this->sendResponse("Sale Status Update Success");
+    }
+
+    public function saleWithUserId($request)
+    {
+        $data = [];
+        if($request['status'] == 0){
+            $data = $this
+                ->sale
+                ->where('user_id', $request['user_id'])
+                ->whereNull('deleted_at')
+                ->with(['sale_detail' => with(
+                    [
+                        'product' => with(['product_image']),
+                    ]
+                )])
+                ->get();
+        }else{
+            $data = $this
+                ->sale
+                ->where('user_id', $request['user_id'])
+                ->where('status',$request['status'])
+                ->whereNull('deleted_at')
+                ->with(['sale_detail' => with(
+                    [
+                        'product' => with(['product_image']),
+                    ]
+                )])
+                ->get();
+        }
+        if (!$data) {
+            return $this->sendResponse('Sale Not Found');
+        }
+        return $this->sendResponse('Sale Edit Success', $data);
     }
 }

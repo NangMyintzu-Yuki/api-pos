@@ -46,9 +46,57 @@ class LocationService extends BaseController
         return $this->sendResponse('User Location Saved Success');
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    public function edit($request)
+    {
+        $data = $this
+            ->location
+            ->where('id', $request['id'])
+            ->whereNull('deleted_at')
+            ->with([
+                'user' => function ($query) {
+                    $query->select('id', 'name','username');
+                },
+                'township' => function ($query) {
+                    $query->select('id', 'name');
+                }
+            ])
+            ->first();
+        if (!$data) {
+            return $this->sendResponse('Location Not Found');
+        }
+        return $this->sendResponse('Location Edit Success', $data);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    public function update(array $request)
+    {
+        $updateData['id'] = $request['id'];
+        $updateData['is_default'] = 0;
+        if(isset($request['title'])){
+            $updateData['title'] = $request['title'];
+        }
+        if(isset($request['address'])){
+            $updateData['address'] = $request['address'];
+        }
+        if(isset($request['township_id'])){
+            $updateData['township_id'] = $request['township_id'];
+        }
+        if(isset($request['latitude'])){
+            $updateData['latitude'] = $request['latitude'];
+        }
+        if(isset($request['longitude'])){
+            $updateData['longitude'] = $request['longitude'];
+        }
+        $this->location->where('id', $updateData['id'])->update($updateData);
+        // $this->updateData($request, 'locations');
+        return $this->sendResponse('Location Update Success');
+    }
+
     public function getLocationWithUserId($request)
     {
-        info($request);
         $data = $this
             ->location
             ->where('user_id', $request['id'])

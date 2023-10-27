@@ -18,7 +18,7 @@ class SiteSettingService extends BaseController
 
     public function index($request)
     {
-        $data = $this->getAll('site_settings',20);
+        $data = $this->getAll('site_settings',20,'id','asc');
         return $this->sendResponse('Site Setting Index Success', $data);
     }
 

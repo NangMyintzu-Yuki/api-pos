@@ -212,6 +212,7 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
         Route::post('/delete', [SaleController::class, 'delete']);
         Route::post('/filter', [SaleController::class, 'filter']);
         Route::post('/change_status', [SaleController::class, 'change_status']);
+        Route::post('/saleWithUserId', [SaleController::class, 'saleWithUserId']);
     });
 
 
@@ -321,6 +322,9 @@ Route::group(['middleware' => ['auth:sanctum','operator']], function () {
     ///////////////////////////////////////// Location
 
     Route::prefix('location')->group(function () {
+        Route::post('/store', [LocationController::class, 'store']);
+        Route::post('/edit', [LocationController::class, 'edit']);
+        Route::post('/update', [LocationController::class, 'update']);
         Route::post('/changeStatus', [LocationController::class, 'changeStatus']);
         Route::post('/delete', [LocationController::class, 'destory']);
     });
