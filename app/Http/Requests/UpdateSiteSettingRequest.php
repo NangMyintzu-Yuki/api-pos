@@ -23,10 +23,10 @@ class UpdateSiteSettingRequest extends FormRequest
     {
         return [
             "id"=>"",
-            "tax"=>"required",
-            "service_charge"=>"required",
-            "dashboard_theme"=>"required",
-            "website_theme"=>"required",
+            "tax"=>"",
+            "service_charge"=>"",
+            "dashboard_theme"=>"",
+            "website_theme"=>"",
         ];
     }
 }

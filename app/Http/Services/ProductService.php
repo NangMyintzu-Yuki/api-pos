@@ -16,6 +16,7 @@ class ProductService extends BaseController
     public function __construct(
         private Product $product,
         private SaleDetail $saleDetail,
+        private ProductImage $productImage,
     ) {
     }
 
@@ -110,7 +111,7 @@ class ProductService extends BaseController
                     $query->select('id', 'name');
                 },
                 'category' => function ($query) {
-                    $query->select('id', 'name','image');
+                    $query->select('id', 'name', 'image');
                 }, 'product_image', "ingredients"
             ])
             ->first();
@@ -126,13 +127,17 @@ class ProductService extends BaseController
     {
 
         try {
+            info($request);
             $this->beginTransaction();
 
             $multiImagePath = "images/products/" . $request['id'];
-            File::deleteDirectory(public_path($multiImagePath));
 
+            // if (isset($request['image']) || isset($request['today']) || isset($request['special'])) {
 
-            DB::table('product_images')->where('product_id', $request['id'])->delete();
+            //     File::deleteDirectory(public_path($multiImagePath));
+            // }
+
+            // DB::table('product_images')->where('product_id', $request['id'])->delete();
             DB::table('product_ingredients')->where('product_id', $request['id'])->delete();
 
             $this->insertProductImageData($request, $request['id']);
@@ -270,38 +275,107 @@ class ProductService extends BaseController
         $images = [];
         $destinationPath = 'images/products/' . $id;
         if (isset($request['today'])) {
-            $image = $request['today'];
-            $todayImageName = date('YmdHis') . '_today.'  . 'png';
-            $image->move($destinationPath, $todayImageName);
-            // $tmpImgs[] = "$todayImageName";
-            $productImage['product_id'] = $id;
-            $productImage['category_id'] = $request['category_id'];
-            $productImage['branch_id'] = $request['branch_id'];
-            $productImage['images'] = "$todayImageName";
-            $productImage['today_menu'] = 1;
+            $prevImage = $this->productImage->where('product_id', $id)->where('today_menu', 1)->whereNull('deleted_at')->value('images');
+            if (str_contains($request['today'], 'C:\xampp\tmp')) {
+                if ($request['today'] != '') {
+                    $path = 'images/products/' . $id . '/'. $prevImage;
+                    if (File::exists($path)) {
+                        File::delete($path);
+                        DB::table('product_images')->where('product_id', $id)->where('today_menu', 1)->delete();
+                    }
+                }
+                $image = $request['today'];
+                if (!str_contains($image, '_today')) {
+                    // if (str_contains($request['image'], 'C:\xampp\tmp')) {
+                    $todayImageName = date('YmdHis') . '_today.'  . 'png';
+                    $image->move($destinationPath, $todayImageName);
+                    // $tmpImgs[] = "$todayImageName";
+                    $productImage['product_id'] = $id;
+                    $productImage['category_id'] = $request['category_id'];
+                    $productImage['branch_id'] = $request['branch_id'];
+                    $productImage['images'] = "$todayImageName";
+                    $productImage['today_menu'] = 1;
+                    $this->insertData($productImage, 'product_images');
+                }
+            } else {
+                if (gettype($request['today']) != 'string') {
 
-            $this->insertData($productImage, 'product_images');
+                    $image = $request['today'];
+                    $todayImageName = date('YmdHis') . '_today.'  . 'png';
+                    $image->move($destinationPath, $todayImageName);
+                    // $tmpImgs[] = "$todayImageName";
+                    $productImage['product_id'] = $id;
+                    $productImage['category_id'] = $request['category_id'];
+                    $productImage['branch_id'] = $request['branch_id'];
+                    $productImage['images'] = "$todayImageName";
+                    $productImage['today_menu'] = 1;
+                    $this->insertData($productImage, 'product_images');
+                }
+            }
         }
         if (isset($request['special'])) {
-            $image = $request['special'];
-            $specialImageName = date('YmdHis') . '_special.'  . 'png';
-            $image->move($destinationPath, $specialImageName);
-            $specialProduct['product_id'] = $id;
-            $specialProduct['category_id'] = $request['category_id'];
-            $specialProduct['branch_id'] = $request['branch_id'];
-            $specialProduct['images'] = "$specialImageName";
-            $specialProduct['special_menu'] = 1;
-
-            $this->insertData($specialProduct, 'product_images');
+            $prevImage = $this->productImage->where('product_id', $id)->where('special_menu', 1)->whereNull('deleted_at')->value('images');
+            if (str_contains($request['special'], 'C:\xampp\tmp')) {
+                if ($request['special'] != '') {
+                    $path = 'images/products/' . $id . '/'. $prevImage;
+                    if (File::exists($path)) {
+                        File::delete($path);
+                        DB::table('product_images')->where('product_id', $id)->where('special_menu', 1)->delete();
+                    }
+                }
+                $image = $request['special'];
+                if (!str_contains($image, '_special')) {
+                    $specialImageName = date('YmdHis') . '_special.'  . 'png';
+                    $image->move($destinationPath, $specialImageName);
+                    $specialProduct['product_id'] = $id;
+                    $specialProduct['category_id'] = $request['category_id'];
+                    $specialProduct['branch_id'] = $request['branch_id'];
+                    $specialProduct['images'] = "$specialImageName";
+                    $specialProduct['special_menu'] = 1;
+                    $this->insertData($specialProduct, 'product_images');
+                }
+            } else {
+                if (gettype($request['special']) != 'string') {
+                    $image = $request['special'];
+                    $specialImageName = date('YmdHis') . '_special.'  . 'png';
+                    $image->move($destinationPath, $specialImageName);
+                    $specialProduct['product_id'] = $id;
+                    $specialProduct['category_id'] = $request['category_id'];
+                    $specialProduct['branch_id'] = $request['branch_id'];
+                    $specialProduct['images'] = "$specialImageName";
+                    $specialProduct['special_menu'] = 1;
+                    $this->insertData($specialProduct, 'product_images');
+                }
+            }
         }
 
         if (count($request['image']) > 0) {
-            foreach ($request['image'] as $key => $image) {
-                $productImage = date('YmdHis') . '_' . random_int(1, 99) . "."  . 'png';
-                $image->move($destinationPath, $productImage);
-                $images[] =  [
-                    "image" => $productImage
-                ];
+            foreach ($request['image'] as  $image) {
+                $prevImages = $this->productImage->where('product_id', $id)->where('today_menu', 0)->where('special_menu', 0)->whereNull('deleted_at')->get();
+                if (gettype($image) == 'object') {
+                    foreach ($prevImages as $prevImage) {
+                        $path = 'images/products/' . $id . '/' . $prevImage->images;
+                        info(["exit",$path]);
+                        if (File::exists($path)) {
+                            File::delete($path);
+                            DB::table('product_images')->where('id', $prevImage->id)->where('today_menu', 0)->where('special_menu', 0)->delete();
+                        }
+                    }
+
+                    $productImage = date('YmdHis') . '_' . random_int(1, 99) . "."  . 'png';
+                    $image->move($destinationPath, $productImage);
+                    $images[] =  [
+                        "image" => $productImage
+                    ];
+                } else {
+                    if (gettype($image) != 'string') {
+                        $productImage = date('YmdHis') . '_' . random_int(1, 99) . "."  . 'png';
+                        $image->move($destinationPath, $productImage);
+                        $images[] =  [
+                            "image" => $productImage
+                        ];
+                    }
+                }
             }
         }
 
